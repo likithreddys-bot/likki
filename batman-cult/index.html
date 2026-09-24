@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Night Shift Protocol</title>
+<meta name="description" content="Fan concept: a Batman-inspired 12-week training program imagined for a cult gym. Not affiliated with DC or cult.fit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  color-scheme: dark;
+  --night: #06080c;
+  --asphalt: #0d1117;
+  --steel: #161c25;
+  --steel-2: #202834;
+  --rain: #8b9bb0;
+  --fog: #c9d2de;
+  --sodium: #f2a93b;
+  --sodium-hot: #ffc766;
+  --blood: #b3261e;
+  --line: rgba(201, 210, 222, 0.12);
+
+  --f-display: "Big Shoulders Display", "Oswald", Impact, "Arial Narrow", sans-serif;
+  --f-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --gutter: clamp(16px, 5vw, 80px);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--night);
+  color: var(--fog);
+  font: 400 16px/1.6 var(--f-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1, h2, h3 { margin: 0; font-family: var(--f-display); font-weight: 900; text-transform: uppercase; line-height: 0.9; text-wrap: balance; letter-spacing: 0.005em; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--sodium); outline-offset: 3px; }
+.mono { font: 500 11px/1.4 var(--f-mono); letter-spacing: 0.16em; text-transform: uppercase; }
+.wrap { width: min(1240px, 100%); margin-inline: auto; padding-inline: var(--gutter); }
+
+/* ---------- Nav ---------- */
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) var(--gutter) 18px;
+  transition: background-color .4s, backdrop-filter .4s;
+}
+.nav.is-solid { background: rgba(6, 8, 12, 0.82); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font: 700 20px/1 var(--f-display); letter-spacing: .08em; text-transform: uppercase; }
+.brand svg { width: 42px; height: 20px; fill: var(--sodium); filter: drop-shadow(0 0 8px rgba(242,169,59,.5)); }
+.brand .x { color: var(--rain); font-weight: 500; }
+.nav__links { display: flex; gap: clamp(14px, 3vw, 36px); }
+.nav__links a { text-decoration: none; color: var(--rain); transition: color .2s; }
+.nav__links a:hover { color: var(--sodium); }
+
+/* ---------- Hero ---------- */
+.hero { position: relative; height: clamp(640px, 100svh, 1100px); overflow: hidden; background: var(--night); }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero__content {
+  position: absolute; z-index: 2; left: 0; right: 0; bottom: clamp(56px, 11vh, 120px);
+  display: grid; gap: 22px;
+}
+.hero__kicker { color: var(--sodium); display: flex; align-items: center; gap: 12px; }
+.hero__kicker::before { content: ""; width: 34px; height: 1px; background: currentColor; }
+.hero h1 {
+  font-size: clamp(64px, 12.5vw, 196px);
+  color: #eef2f7;
+  text-shadow: 0 6px 40px rgba(0,0,0,.7);
+}
+.hero h1 .line { display: block; overflow: hidden; }
+.hero h1 .line span { display: inline-block; animation: rise 1.1s var(--ease) both; }
+.hero h1 .line:nth-child(2) span { animation-delay: .12s; }
+.hero h1 .line:nth-child(3) span { animation-delay: .24s; color: transparent; -webkit-text-stroke: 2px var(--sodium); }
+@keyframes rise { from { transform: translateY(100%); } to { transform: none; } }
+.hero__sub { max-width: 46ch; color: var(--fog); font-size: clamp(16px, 1.4vw, 19px); text-shadow: 0 2px 16px #000; }
+.hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 16px 26px; border: 1px solid var(--sodium); border-radius: 2px;
+  background: var(--sodium); color: #120c02; text-decoration: none;
+  font: 700 15px/1 var(--f-display); letter-spacing: .14em; text-transform: uppercase;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  transition: background-color .2s, transform .2s var(--ease), box-shadow .3s;
+}
+.btn:hover { background: var(--sodium-hot); transform: translateY(-2px); box-shadow: 0 0 40px rgba(242,169,59,.45); }
+.btn--ghost { background: rgba(6,8,12,.4); color: var(--fog); border-color: var(--line); }
+.btn--ghost:hover { background: rgba(22,28,37,.8); color: var(--sodium); box-shadow: none; }
+.hero__meta {
+  position: absolute; z-index: 2; right: var(--gutter); bottom: clamp(56px, 11vh, 120px);
+  display: grid; gap: 6px; text-align: right; color: var(--rain);
+}
+.hero__meta b { color: var(--sodium); font-weight: 500; }
+
+/* ---------- Marquee ---------- */
+.marquee { border-block: 1px solid var(--line); background: var(--sodium); color: #120c02; overflow: hidden; }
+.marquee__track { display: flex; width: max-content; animation: slide 38s linear infinite; }
+.marquee__track span { font: 900 clamp(22px, 3vw, 34px)/1 var(--f-display); text-transform: uppercase; letter-spacing: .04em; padding: 16px 28px; white-space: nowrap; display: flex; align-items: center; gap: 56px; }
+.marquee__track svg { width: 40px; height: 18px; fill: currentColor; }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+/* ---------- Sections ---------- */
+.section { padding-block: clamp(80px, 12vw, 160px); position: relative; }
+.section__head { display: grid; gap: 16px; margin-bottom: clamp(40px, 6vw, 72px); max-width: 780px; }
+.section__head .mono { color: var(--sodium); }
+.section__head h2 { font-size: clamp(48px, 7vw, 104px); color: #eef2f7; }
+.section__head p:last-child { color: var(--rain); font-size: 18px; max-width: 56ch; }
+
+.reveal { transition: transform .9s var(--ease), filter .9s var(--ease); }
+.js .reveal:not(.is-in) { transform: translateY(28px); filter: brightness(.55); }
+
+/* Disciplines */
+.method { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+.card {
+  --mx: 50%; --my: 0%;
+  grid-column: span 2; position: relative; overflow: hidden;
+  display: grid; gap: 14px; align-content: start;
+  padding: clamp(24px, 2.6vw, 34px); min-height: 300px;
+  background:
+    radial-gradient(420px circle at var(--mx) var(--my), rgba(242,169,59,.16), transparent 60%),
+    linear-gradient(180deg, var(--steel), var(--asphalt));
+  border: 1px solid var(--line);
+}
+.card:nth-child(4), .card:nth-child(5) { grid-column: span 3; }
+.card::after { content: ""; position: absolute; inset: 0; border: 1px solid transparent; transition: border-color .3s; pointer-events: none; }
+.card:hover::after { border-color: rgba(242,169,59,.5); }
+.card__top { display: flex; justify-content: space-between; align-items: baseline; color: var(--rain); }
+.card__top b { color: var(--sodium); font-weight: 500; }
+.card h3 { font-size: clamp(38px, 4vw, 58px); color: #eef2f7; }
+.card p { color: var(--rain); max-width: 44ch; }
+.card ul { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 10px; }
+.card li { font: 400 11px/1 var(--f-mono); letter-spacing: .06em; padding: 7px 10px; border: 1px solid var(--line); color: var(--fog); }
+.card__bat { position: absolute; right: -30px; bottom: -24px; width: 190px; height: 90px; fill: rgba(201,210,222,.04); transition: fill .4s, transform .6s var(--ease); }
+.card:hover .card__bat { fill: rgba(242,169,59,.09); transform: translate(-8px,-6px) rotate(-4deg); }
+
+/* Program */
+.section--program { background: linear-gradient(180deg, var(--night), var(--asphalt) 30%, var(--asphalt) 70%, var(--night)); }
+.phases { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px; padding-top: 44px; }
+.phases__rail { position: absolute; top: 12px; left: 0; right: 0; height: 2px; background: var(--steel-2); }
+.phases__rail i { position: absolute; inset: 0; transform-origin: left; transform: scaleX(var(--p, 0)); background: linear-gradient(90deg, var(--sodium), var(--sodium-hot)); box-shadow: 0 0 18px rgba(242,169,59,.6); }
+.phase { position: relative; display: grid; gap: 12px; align-content: start; }
+.phase::before { content: ""; position: absolute; top: -39px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--night); border: 2px solid var(--steel-2); transition: border-color .4s, background-color .4s, box-shadow .4s; }
+.phase.is-lit::before { border-color: var(--sodium); background: var(--sodium); box-shadow: 0 0 14px var(--sodium); }
+.phase .mono { color: var(--sodium); }
+.phase h3 { font-size: clamp(30px, 2.8vw, 44px); overflow-wrap: anywhere; color: #eef2f7; }
+.phase p { color: var(--rain); }
+.phase dl { margin: 6px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font: 400 12px/1.4 var(--f-mono); }
+.phase dt { color: var(--rain); }
+.phase dd { margin: 0; color: var(--fog); font-variant-numeric: tabular-nums; }
+
+/* Schedule */
+.shift { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
+.tabs { display: inline-flex; border: 1px solid var(--line); margin-bottom: 20px; }
+.tabs button {
+  appearance: none; border: 0; cursor: pointer; background: transparent; color: var(--rain);
+  padding: 12px 20px; font: 500 12px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase;
+  transition: background-color .25s, color .25s;
+}
+.tabs button[aria-selected="true"] { background: var(--sodium); color: #120c02; }
+.clock { font: 900 clamp(90px, 14vw, 190px)/0.85 var(--f-display); color: #eef2f7; font-variant-numeric: tabular-nums; }
+.clock small { font-size: .3em; color: var(--sodium); margin-left: 8px; letter-spacing: .05em; }
+.shift__note { color: var(--rain); margin-top: 18px; max-width: 40ch; }
+.table-wrap { overflow-x: auto; }
+.classes { width: 100%; border-collapse: collapse; min-width: 480px; }
+.classes th { text-align: left; font: 500 11px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--rain); padding: 0 12px 14px 0; border-bottom: 1px solid var(--line); }
+.classes td { padding: 18px 12px 18px 0; border-bottom: 1px solid var(--line); vertical-align: baseline; }
+.classes td:first-child { font: 500 14px/1 var(--f-mono); color: var(--sodium); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.classes td:nth-child(2) { font: 700 24px/1.1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; color: #eef2f7; }
+.classes td:last-child { color: var(--rain); font-size: 14px; }
+.classes tbody tr { transition: background-color .2s; }
+.classes tbody tr:hover { background: rgba(242,169,59,.05); }
+.intensity { display: inline-flex; gap: 3px; }
+.intensity i { width: 14px; height: 6px; background: var(--steel-2); }
+.intensity i.on { background: var(--sodium); }
+
+/* Signal / join */
+.section--signal { overflow: hidden; background: var(--night); }
+.signal-sky { position: absolute; inset: 0; pointer-events: none; }
+.join { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.join h2 { font-size: clamp(56px, 8.5vw, 132px); color: #eef2f7; }
+.join h2 em { font-style: normal; color: var(--sodium); text-shadow: 0 0 40px rgba(242,169,59,.5); }
+.join__lede { color: var(--rain); font-size: 18px; margin-top: 20px; max-width: 44ch; }
+.form { display: grid; gap: 14px; padding: clamp(22px, 3vw, 34px); background: rgba(13,17,23,.86); border: 1px solid var(--line); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.form label { display: grid; gap: 8px; color: var(--rain); }
+.form input, .form select {
+  width: 100%; padding: 14px 14px; border-radius: 0; border: 1px solid var(--steel-2);
+  background: var(--night); color: var(--fog); font: 400 16px/1.2 var(--f-body);
+}
+.form input:focus, .form select:focus { outline: none; border-color: var(--sodium); box-shadow: 0 0 0 3px rgba(242,169,59,.18); }
+.form .btn { justify-content: center; margin-top: 6px; }
+.form__status { min-height: 1.4em; color: var(--sodium); font: 500 12px/1.4 var(--f-mono); letter-spacing: .08em; }
+.form__fine { color: var(--rain); font-size: 12px; }
+
+.footer { border-top: 1px solid var(--line); padding-block: 32px; color: var(--rain); font-size: 13px; }
+.footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.footer strong { color: var(--fog); font-weight: 500; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+  .method { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card, .card:nth-child(4), .card:nth-child(5) { grid-column: span 1; }
+  .card:nth-child(5) { grid-column: 1 / -1; }
+  .phases { grid-template-columns: repeat(2, minmax(0,1fr)); row-gap: 56px; }
+  .phases__rail { display: none; }
+  .shift, .join { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 640px) {
+  .nav__links { display: none; }
+  .hero__meta { display: none; }
+  .method { grid-template-columns: minmax(0,1fr); }
+  .card:nth-child(5) { grid-column: auto; }
+  .card { min-height: 0; }
+  .phases { grid-template-columns: minmax(0,1fr); }
+  .hero h1 .line:nth-child(3) span { -webkit-text-stroke-width: 1.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee__track, .hero h1 .line span { animation: none; }
+  .reveal { transition: none; }
+  .js .reveal:not(.is-in) { transform: none; filter: none; }
+}
+</style>
+</head>
+<body class="js">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><path id="bat" d=""/></defs>
+</svg>
+
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="#top" aria-label="Night Shift Protocol, home">
+    <svg viewBox="-100 -32 200 66" aria-hidden="true"><use href="#bat"/></svg>
+    <span>Batman <span class="x">&times;</span> Cult</span>
+  </a>
+  <div class="nav__links mono">
+    <a href="#method">Method</a>
+    <a href="#program">Program</a>
+    <a href="#shift">Night shift</a>
+    <a href="#signal">Join</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <canvas id="gotham" aria-hidden="true"></canvas>
+  <div class="hero__content wrap">
+    <p class="hero__kicker mono">Fan concept &middot; The Night Shift Protocol</p>
+    <h1 aria-label="Train like the night needs you">
+      <span class="line"><span>Train like</span></span>
+      <span class="line"><span>the night</span></span>
+      <span class="line"><span>needs you</span></span>
+    </h1>
+    <p class="hero__sub">A 12-week program built on how Bruce Wayne would actually train: heavy strength, real combat conditioning, agility, endurance and a quiet mind. No cape required.</p>
+    <div class="hero__ctas">
+      <button class="btn" type="button" data-signal>Light the signal</button>
+      <a class="btn btn--ghost" href="#program">See the 12 weeks</a>
+    </div>
+  </div>
+  <div class="hero__meta mono" aria-hidden="true">
+    <span>Gotham &middot; <b data-clock>00:00</b></span>
+    <span>Rain &middot; <b>heavy</b></span>
+    <span>Signal &middot; <b data-signal-state>standby</b></span>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>No capes required <svg viewBox="-100 -32 200 66"><use href="#bat"/></svg> 5 AM or 9 PM <svg viewBox="-100 -32 200 66"><use href="#bat"/></svg> Gotham never sleeps <svg viewBox="-100 -32 200 66"><use href="#bat"/></svg> Earn the belt <svg viewBox="-100 -32 200 66"><use href="#bat"/></svg></span>
+    <span>No capes required <svg viewBox="-100 -32 200 66"><use href="#bat"/></svg> 5 AM or 9 PM <svg viewBox="-100 -32 200 66"><use href="#bat"/></svg> Gotham never sleeps <svg viewBox="-100 -32 200 66"><use href="#bat"/></svg> Earn the belt <svg viewBox="-100 -32 200 66"><use href="#bat"/></svg></span>
+  </div>
+</div>
+
+<main>
+  <section class="section" id="method" aria-labelledby="method-title">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <p class="mono">01 &middot; The Wayne Method</p>
+        <h2 id="method-title">Five disciplines. One body.</h2>
+        <p>Batman has no superpowers. Everything he does comes from training, so the program trains all of it.</p>
+      </div>
+      <div class="method">
+        <article class="card reveal">
+          <div class="card__top mono"><span>Strength</span><b>3&times; / week</b></div>
+          <h3>Iron</h3>
+          <p>Heavy compound lifts built for carrying, pulling and holding: deadlifts, weighted pull-ups, farmer carries.</p>
+          <ul><li>Deadlift</li><li>Pull-up</li><li>Carries</li></ul>
+          <svg class="card__bat" viewBox="-100 -32 200 66" aria-hidden="true"><use href="#bat"/></svg>
+        </article>
+        <article class="card reveal">
+          <div class="card__top mono"><span>Combat</span><b>3&times; / week</b></div>
+          <h3>Fists</h3>
+          <p>Boxing and kickboxing rounds on the bag and pads, with footwork and defence drills between rounds.</p>
+          <ul><li>Boxing</li><li>Kickboxing</li><li>Footwork</li></ul>
+          <svg class="card__bat" viewBox="-100 -32 200 66" aria-hidden="true"><use href="#bat"/></svg>
+        </article>
+        <article class="card reveal">
+          <div class="card__top mono"><span>Agility</span><b>2&times; / week</b></div>
+          <h3>Rooftops</h3>
+          <p>Plyometrics, climbing and quick changes of direction, so you can move fast without losing control.</p>
+          <ul><li>Box jumps</li><li>Ladders</li><li>Climb</li></ul>
+          <svg class="card__bat" viewBox="-100 -32 200 66" aria-hidden="true"><use href="#bat"/></svg>
+        </article>
+        <article class="card reveal">
+          <div class="card__top mono"><span>Endurance</span><b>2&times; / week</b></div>
+          <h3>The long night</h3>
+          <p>Stair climbs, rowing and interval runs that build the engine for a patrol that lasts until sunrise.</p>
+          <ul><li>Stairs</li><li>Row</li><li>Intervals</li></ul>
+          <svg class="card__bat" viewBox="-100 -32 200 66" aria-hidden="true"><use href="#bat"/></svg>
+        </article>
+        <article class="card reveal">
+          <div class="card__top mono"><span>Mind</span><b>Daily</b></div>
+          <h3>Stillness</h3>
+          <p>Breathwork, cold exposure and ten minutes of focus training. The detective works harder than the fighter.</p>
+          <ul><li>Breathwork</li><li>Cold</li><li>Focus</li></ul>
+          <svg class="card__bat" viewBox="-100 -32 200 66" aria-hidden="true"><use href="#bat"/></svg>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--program" id="program" aria-labelledby="program-title">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <p class="mono">02 &middot; The program</p>
+        <h2 id="program-title">Twelve weeks from the pit to the knight.</h2>
+        <p>Four phases, three weeks each. Every phase adds load and trims rest until you&rsquo;re ready for the rooftops.</p>
+      </div>
+      <div class="phases" data-phases>
+        <div class="phases__rail" aria-hidden="true"><i></i></div>
+        <div class="phase reveal">
+          <p class="mono">Weeks 1&ndash;3</p>
+          <h3>The Pit</h3>
+          <p>Climb out first. Build the base: movement quality, joint strength and a steady cardio habit.</p>
+          <dl><dt>Sessions</dt><dd>4 / week</dd><dt>Rest</dt><dd>90 s</dd></dl>
+        </div>
+        <div class="phase reveal">
+          <p class="mono">Weeks 4&ndash;6</p>
+          <h3>The Cave</h3>
+          <p>Heavy strength blocks and the first real combat rounds. This is where the work gets quiet and hard.</p>
+          <dl><dt>Sessions</dt><dd>5 / week</dd><dt>Rest</dt><dd>75 s</dd></dl>
+        </div>
+        <div class="phase reveal">
+          <p class="mono">Weeks 7&ndash;9</p>
+          <h3>The Rooftops</h3>
+          <p>Speed and agility join the strength. Circuits mix lifts, pad work and plyometrics without breaks.</p>
+          <dl><dt>Sessions</dt><dd>5 / week</dd><dt>Rest</dt><dd>60 s</dd></dl>
+        </div>
+        <div class="phase reveal">
+          <p class="mono">Weeks 10&ndash;12</p>
+          <h3>The Knight</h3>
+          <p>Peak weeks and a final test night: a timed gauntlet of every discipline, back to back.</p>
+          <dl><dt>Sessions</dt><dd>6 / week</dd><dt>Rest</dt><dd>45 s</dd></dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="shift" aria-labelledby="shift-title">
+    <div class="wrap shift">
+      <div class="reveal">
+        <p class="mono" style="color:var(--sodium)">03 &middot; Night shift</p>
+        <h2 id="shift-title" style="font-size:clamp(48px,7vw,104px);color:#eef2f7;margin:16px 0 28px">Pick your hour.</h2>
+        <div class="tabs" role="tablist" aria-label="Session time">
+          <button type="button" role="tab" id="tab-dawn" aria-selected="false" aria-controls="classes" data-shift="dawn">Before dawn</button>
+          <button type="button" role="tab" id="tab-dusk" aria-selected="true" aria-controls="classes" data-shift="dusk">After dusk</button>
+        </div>
+        <p class="clock" data-shift-clock>21:00<small>PM</small></p>
+        <p class="shift__note" data-shift-note>For people who train when the city goes quiet. Lights low, music loud.</p>
+      </div>
+      <div class="table-wrap reveal">
+        <table class="classes" id="classes" aria-labelledby="shift-title">
+          <thead><tr><th>Time</th><th>Class</th><th>Intensity</th><th>What it is</th></tr></thead>
+          <tbody data-shift-rows></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--signal" id="signal" aria-labelledby="signal-title">
+    <canvas class="signal-sky" id="signal-sky" aria-hidden="true"></canvas>
+    <div class="wrap join">
+      <div class="reveal">
+        <p class="mono" style="color:var(--sodium)">04 &middot; Answer the call</p>
+        <h2 id="signal-title" style="margin-top:16px">When the signal&rsquo;s <em>on</em>, you show up.</h2>
+        <p class="join__lede">Put your name on the list for the first Night Shift cohort. Twelve weeks, small groups, one test night at the end.</p>
+      </div>
+      <form class="form reveal" id="join" novalidate>
+        <label class="mono" for="f-name">Name
+          <input id="f-name" name="name" autocomplete="name" placeholder="Bruce Wayne" required>
+        </label>
+        <label class="mono" for="f-city">City
+          <input id="f-city" name="city" autocomplete="address-level2" placeholder="Gotham" required>
+        </label>
+        <label class="mono" for="f-shift">Shift
+          <select id="f-shift" name="shift">
+            <option>After dusk &middot; 21:00</option>
+            <option>Before dawn &middot; 05:00</option>
+          </select>
+        </label>
+        <button class="btn" type="submit">Light the signal</button>
+        <p class="form__status" id="f-status" role="status"></p>
+        <p class="form__fine">Concept demo. Nothing is sent or saved.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <span><strong>Night Shift Protocol</strong> &middot; an unofficial fan concept.</span>
+    <span>Not affiliated with, endorsed by or connected to DC, Warner Bros. or cult.fit. Batman is a trademark of DC.</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- The bat shape (drawn once, reused in SVG and canvas) ----------
+     Right half, from between the ears to the tail; mirrored for the left. */
+  const HALF = [
+    ["M", 0, -14], ["L", 7, -14], ["L", 11, -30], ["L", 15, -10],
+    ["Q", 22, -8, 30, -16],
+    ["Q", 62, -12, 98, -30],
+    ["Q", 86, -6, 90, 12],
+    ["Q", 76, 2, 64, 6],
+    ["Q", 58, 16, 60, 30],
+    ["Q", 44, 16, 30, 18],
+    ["Q", 18, 20, 12, 30],
+    ["Q", 6, 30, 0, 34],
+  ];
+  function batD() {
+    let d = "";
+    for (const [c, ...p] of HALF) d += `${c}${p.join(" ")} `;
+    const rev = HALF.slice().reverse();
+    for (let i = 0; i < rev.length - 1; i++) {
+      const [c, ...p] = rev[i];
+      const [, ...prev] = rev[i + 1];
+      const end = prev.slice(-2);
+      if (c === "Q") d += `Q${-p[0]} ${p[1]} ${-end[0]} ${end[1]} `;
+      else d += `L${-end[0]} ${end[1]} `;
+    }
+    return d + "Z";
+  }
+  const BAT = batD();
+  document.getElementById("bat").setAttribute("d", BAT);
+  const batPath = new Path2D(BAT);
+
+  /* ---------- Clock ---------- */
+  const clock = document.querySelector("[data-clock]");
+  const tickClock = () => { const d = new Date(); clock.textContent = d.toTimeString().slice(0, 5); };
+  tickClock(); setInterval(tickClock, 15000);
+
+  /* ---------- Nav ---------- */
+  const nav = document.querySelector(".nav");
+  const onScroll = () => nav.classList.toggle("is-solid", scrollY > 40);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+  /* ---------- Seeded random for a stable skyline ---------- */
+  function rng(seed) { return () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646; }
+
+  /* ---------- Gotham hero ---------- */
+  const canvas = document.getElementById("gotham");
+  const ctx = canvas.getContext("2d");
+  const hero = canvas.parentElement;
+  let W = 0, H = 0, DPR = 1;
+  let layers = [], drops = [], clouds = [], bats = [];
+  const pointer = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };
+  let signal = 0, signalTo = 0.35;   // 0 off, 1 full blaze
+  let flash = 0, nextBolt = 3 + Math.random() * 4, bolt = null;
+  const signalState = document.querySelector("[data-signal-state]");
+
+  function buildSkyline() {
+    const r = rng(1939);
+    const defs = [
+      { depth: 0.25, base: 0.62, minH: 0.12, maxH: 0.34, color: "#121925", win: 0.05 },
+      { depth: 0.55, base: 0.72, minH: 0.14, maxH: 0.42, color: "#0c1119", win: 0.09 },
+      { depth: 1.0,  base: 0.84, minH: 0.10, maxH: 0.50, color: "#05070a", win: 0.12 },
+    ];
+    layers = defs.map((d, li) => {
+      const buildings = [];
+      let x = -0.1;
+      while (x < 1.15) {
+        const w = 0.03 + r() * (0.07 - li * 0.012);
+        const h = d.minH + r() * (d.maxH - d.minH) * (r() < 0.12 ? 1.35 : 1);
+        const kind = r();
+        const windows = [];
+        const cols = Math.max(2, Math.floor(w * 140));
+        const rows = Math.floor(h * 90);
+        for (let cx = 0; cx < cols; cx++) for (let cy = 0; cy < rows; cy++)
+          if (r() < d.win) windows.push({ u: (cx + 0.5) / cols, v: (cy + 0.6) / rows, a: 0.35 + r() * 0.65, f: r() < 0.06 });
+        buildings.push({ x, w, h, kind, windows, antenna: r() < 0.2 });
+        x += w + r() * 0.012;
+      }
+      return { ...d, buildings };
+    });
+    // The tower that carries the signal lamp.
+    const front = layers[2].buildings;
+    const tower = front.reduce((best, b) => (Math.abs(b.x + b.w / 2 - 0.66) < Math.abs(best.x + best.w / 2 - 0.66) ? b : best));
+    tower.h = 0.46; tower.lamp = true; tower.kind = 0.1;
+  }
+
+  function resize() {
+    DPR = Math.min(2, devicePixelRatio || 1);
+    W = hero.clientWidth; H = hero.clientHeight;
+    canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const n = reduce ? 0 : Math.round(Math.min(700, W * H / 2200));
+    drops = Array.from({ length: n }, () => newDrop(true));
+    clouds = Array.from({ length: 9 }, (_, i) => ({ x: Math.random(), y: 0.05 + Math.random() * 0.3, r: 0.18 + Math.random() * 0.22, s: 0.004 + Math.random() * 0.006, o: 0.25 + Math.random() * 0.3 }));
+  }
+  function newDrop(anyY) {
+    const z = Math.random();
+    return { x: Math.random() * (W + 200) - 100, y: anyY ? Math.random() * H : -20, z, len: 10 + z * 22, v: 700 + z * 900 };
+  }
+
+  function spawnBats() {
+    const n = 6 + Math.floor(Math.random() * 6);
+    const fromLeft = Math.random() < 0.5;
+    const y = H * (0.15 + Math.random() * 0.25);
+    for (let i = 0; i < n; i++) bats.push({
+      x: fromLeft ? -40 - i * 26 * Math.random() * 3 : W + 40 + i * 26 * Math.random() * 3,
+      y: y + (Math.random() - 0.5) * 90, vx: (fromLeft ? 1 : -1) * (160 + Math.random() * 120),
+      s: 0.08 + Math.random() * 0.1, ph: Math.random() * 6, vy: (Math.random() - 0.5) * 30,
+    });
+  }
+
+  function makeBolt() {
+    const pts = []; let x = W * (0.1 + Math.random() * 0.8), y = 0;
+    while (y < H * 0.55) { pts.push([x, y]); x += (Math.random() - 0.5) * 60; y += 18 + Math.random() * 30; }
+    return { pts, life: 0.35 };
+  }
+
+  const lamp = { x: 0, y: 0 };
+
+  function drawSky(t) {
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#03050a"); g.addColorStop(0.55, "#0b1320"); g.addColorStop(0.85, "#1b1a1c"); g.addColorStop(1, "#231a12");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    // city glow on the low clouds
+    const hz = ctx.createRadialGradient(W * 0.5, H * 0.95, 0, W * 0.5, H * 0.95, W * 0.8);
+    hz.addColorStop(0, "rgba(242,169,59,0.16)"); hz.addColorStop(1, "rgba(242,169,59,0)");
+    ctx.fillStyle = hz; ctx.fillRect(0, 0, W, H);
+  }
+
+  function drawClouds(dt) {
+    for (const c of clouds) {
+      c.x += c.s * dt; if (c.x - c.r > 1.2) c.x = -c.r;
+      const cx = (c.x - (pointer.x - 0.5) * 0.02) * W, cy = c.y * H, rr = c.r * W;
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, rr);
+      g.addColorStop(0, `rgba(58,70,88,${c.o})`); g.addColorStop(1, "rgba(58,70,88,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(cx, cy, rr, rr * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  function signalSpot() {
+    return { x: W * (0.34 + (pointer.x - 0.5) * 0.08), y: H * (0.2 + (pointer.y - 0.5) * 0.05) };
+  }
+
+  function drawSignal(t) {
+    if (signal < 0.01) return;
+    const s = signalSpot();
+    const flicker = 0.92 + Math.sin(t * 23) * 0.03 + Math.sin(t * 7.3) * 0.04;
+    const a = signal * flicker;
+    // beam from the lamp to the clouds
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    const bw = Math.min(W, H) * 0.19;
+    const beam = ctx.createLinearGradient(lamp.x, lamp.y, s.x, s.y);
+    beam.addColorStop(0, `rgba(255,214,140,${0.5 * a})`); beam.addColorStop(1, `rgba(255,214,140,${0.08 * a})`);
+    ctx.fillStyle = beam;
+    const ang = Math.atan2(s.y - lamp.y, s.x - lamp.x) + Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(lamp.x - 6, lamp.y); ctx.lineTo(lamp.x + 6, lamp.y);
+    ctx.lineTo(s.x + Math.cos(ang) * bw, s.y + Math.sin(ang) * bw);
+    ctx.lineTo(s.x - Math.cos(ang) * bw, s.y - Math.sin(ang) * bw);
+    ctx.closePath(); ctx.fill();
+    // lit oval on the clouds
+    const rx = bw * 1.25, ry = bw * 0.72;
+    const oval = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, rx);
+    oval.addColorStop(0, `rgba(255,224,160,${0.75 * a})`); oval.addColorStop(0.7, `rgba(255,200,110,${0.45 * a})`); oval.addColorStop(1, "rgba(255,190,90,0)");
+    ctx.fillStyle = oval; ctx.beginPath(); ctx.ellipse(s.x, s.y, rx, ry, -0.12, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    // the bat shadow inside it
+    ctx.save();
+    ctx.translate(s.x, s.y); ctx.rotate(-0.12);
+    const k = (rx * 1.35) / 200; ctx.scale(k, k);
+    ctx.fillStyle = `rgba(6,8,12,${0.85 * Math.min(1, signal * 1.4)})`;
+    ctx.filter = "blur(1.2px)";
+    ctx.fill(batPath);
+    ctx.restore();
+  }
+
+  function drawSearchlights(t) {
+    ctx.save(); ctx.globalCompositeOperation = "lighter";
+    const sources = [[0.12, 0.9, 0.0], [0.88, 0.92, 2.1]];
+    for (const [sx, sy, ph] of sources) {
+      const x = sx * W, y = sy * H;
+      const ang = -Math.PI / 2 + Math.sin(t * 0.35 + ph) * 0.5;
+      const len = H * 1.1, spread = 0.07;
+      const g = ctx.createLinearGradient(x, y, x + Math.cos(ang) * len, y + Math.sin(ang) * len);
+      g.addColorStop(0, "rgba(180,200,230,0.16)"); g.addColorStop(1, "rgba(180,200,230,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x, y);
+      ctx.lineTo(x + Math.cos(ang - spread) * len, y + Math.sin(ang - spread) * len);
+      ctx.lineTo(x + Math.cos(ang + spread) * len, y + Math.sin(ang + spread) * len);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawSkyline(t, scroll) {
+    layers.forEach((L, li) => {
+      const px = (pointer.x - 0.5) * -40 * L.depth;
+      const py = scroll * 0.25 * L.depth;
+      for (const b of L.buildings) {
+        const x = b.x * W + px, w = b.w * W, h = b.h * H, y = L.base * H - h + py + (H - L.base * H);
+        const top = y - (H - L.base * H) * 0; // building fills to the bottom
+        ctx.fillStyle = L.color;
+        ctx.fillRect(x, y, w, H - y + 2);
+        // rooftop details
+        if (b.kind < 0.2) { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + w / 2, y - w * 0.6); ctx.lineTo(x + w, y); ctx.fill(); }
+        else if (b.kind < 0.35) ctx.fillRect(x + w * 0.25, y - h * 0.05, w * 0.5, h * 0.05 + 1);
+        if (b.antenna) ctx.fillRect(x + w / 2 - 1, y - h * 0.18, 2, h * 0.18);
+        if (b.antenna && li === 2) {
+          const on = Math.sin(t * 3 + b.x * 40) > 0.6;
+          if (on) { ctx.fillStyle = "rgba(179,38,30,0.9)"; ctx.beginPath(); ctx.arc(x + w / 2, y - h * 0.18, 2.2, 0, 7); ctx.fill(); ctx.fillStyle = L.color; }
+        }
+        // windows
+        const ww = Math.max(1.5, w / 22), wh = Math.max(2, ww * 1.6);
+        for (const win of b.windows) {
+          let a = win.a * (0.55 + 0.45 * L.depth);
+          if (win.f) a *= 0.5 + 0.5 * Math.sin(t * 2 + win.u * 30);
+          ctx.fillStyle = `rgba(242,169,59,${a * 0.55})`;
+          ctx.fillRect(x + win.u * w - ww / 2, y + win.v * h * 0.95, ww, wh);
+        }
+        if (b.lamp) {
+          lamp.x = x + w / 2; lamp.y = y - 6;
+          ctx.fillStyle = "#05070a"; ctx.fillRect(lamp.x - 9, lamp.y - 4, 18, 10);
+          ctx.fillStyle = `rgba(255,220,150,${0.4 + signal * 0.6})`; ctx.beginPath(); ctx.arc(lamp.x, lamp.y - 4, 5, Math.PI, 0); ctx.fill();
+        }
+      }
+      // fog between layers
+      if (li < 2) {
+        const fy = L.base * H + py;
+        const fog = ctx.createLinearGradient(0, fy - H * 0.25, 0, fy + H * 0.1);
+        fog.addColorStop(0, "rgba(12,18,28,0)"); fog.addColorStop(1, "rgba(18,24,34,0.55)");
+        ctx.fillStyle = fog; ctx.fillRect(0, fy - H * 0.25, W, H * 0.4);
+      }
+    });
+  }
+
+  function drawBats(dt, t) {
+    ctx.fillStyle = "#020304";
+    for (let i = bats.length - 1; i >= 0; i--) {
+      const b = bats[i];
+      b.x += b.vx * dt; b.y += b.vy * dt + Math.sin(t * 3 + b.ph) * 0.6;
+      if (b.x < -120 || b.x > W + 120) { bats.splice(i, 1); continue; }
+      const flap = 0.35 + Math.abs(Math.sin(t * 14 + b.ph)) * 0.75;
+      ctx.save(); ctx.translate(b.x, b.y); ctx.scale(b.s * Math.sign(b.vx), b.s * flap); ctx.fill(batPath); ctx.restore();
+    }
+  }
+
+  function drawRain(dt) {
+    ctx.save();
+    ctx.lineCap = "round";
+    const wind = 0.18 + (pointer.x - 0.5) * 0.1;
+    for (const d of drops) {
+      d.y += d.v * dt; d.x += d.v * wind * dt;
+      if (d.y > H + 20) Object.assign(d, newDrop(false));
+      ctx.strokeStyle = `rgba(170,190,215,${0.08 + d.z * 0.22})`;
+      ctx.lineWidth = 0.6 + d.z * 0.8;
+      ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - d.len * wind, d.y - d.len); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawLightning(dt) {
+    if (reduce) return;
+    nextBolt -= dt;
+    if (nextBolt <= 0) { bolt = makeBolt(); flash = 1; nextBolt = 6 + Math.random() * 8; }
+    if (bolt) {
+      bolt.life -= dt;
+      ctx.save(); ctx.globalCompositeOperation = "lighter";
+      ctx.strokeStyle = `rgba(210,225,255,${Math.max(0, bolt.life / 0.35)})`; ctx.lineWidth = 2; ctx.shadowColor = "#bcd"; ctx.shadowBlur = 18;
+      ctx.beginPath(); bolt.pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.stroke();
+      ctx.restore();
+      if (bolt.life <= 0) bolt = null;
+    }
+    if (flash > 0.01) {
+      ctx.fillStyle = `rgba(200,215,240,${flash * 0.22})`; ctx.fillRect(0, 0, W, H);
+      flash *= Math.pow(0.02, dt * 3);
+    }
+  }
+
+  function vignette() {
+    const v = ctx.createRadialGradient(W / 2, H * 0.45, Math.min(W, H) * 0.3, W / 2, H * 0.5, Math.max(W, H) * 0.8);
+    v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(0,0,0,0.7)");
+    ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+    const bottom = ctx.createLinearGradient(0, H * 0.55, 0, H);
+    bottom.addColorStop(0, "rgba(6,8,12,0)"); bottom.addColorStop(1, "rgba(6,8,12,0.9)");
+    ctx.fillStyle = bottom; ctx.fillRect(0, H * 0.55, W, H * 0.45);
+  }
+
+  let last = performance.now(), running = true, nextBats = 2;
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const t = now / 1000;
+    pointer.x += (pointer.tx - pointer.x) * (1 - Math.exp(-dt * 3));
+    pointer.y += (pointer.ty - pointer.y) * (1 - Math.exp(-dt * 3));
+    signal += (signalTo - signal) * (1 - Math.exp(-dt * 2.5));
+    const scroll = Math.min(H, scrollY);
+
+    drawSky(t);
+    drawClouds(dt);
+    drawSearchlights(t);
+    drawSignal(t);
+    if (!reduce) { nextBats -= dt; if (nextBats <= 0) { spawnBats(); nextBats = 7 + Math.random() * 8; } drawBats(dt, t); }
+    drawLightning(dt);
+    drawSkyline(t, scroll);
+    drawRain(dt);
+    vignette();
+    if (running) requestAnimationFrame(frame);
+  }
+
+  buildSkyline(); resize();
+  addEventListener("resize", resize);
+  hero.addEventListener("pointermove", (e) => {
+    const r = hero.getBoundingClientRect();
+    pointer.tx = (e.clientX - r.left) / r.width; pointer.ty = (e.clientY - r.top) / r.height;
+  });
+  new IntersectionObserver(([en]) => {
+    const was = running; running = en.isIntersecting;
+    if (running && !was) { last = performance.now(); requestAnimationFrame(frame); }
+  }).observe(hero);
+  requestAnimationFrame(frame);
+
+  function lightSignal() {
+    signalTo = 1; flash = 0.6; signalState.textContent = "on";
+    if (!reduce) spawnBats();
+  }
+  document.querySelectorAll("[data-signal]").forEach((b) => b.addEventListener("click", lightSignal));
+
+  /* ---------- Card spotlight ---------- */
+  document.querySelectorAll(".card").forEach((card) => {
+    card.addEventListener("pointermove", (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      card.style.setProperty("--my", `${e.clientY - r.top}px`);
+    });
+  });
+
+  /* ---------- Reveal on scroll (content is visible without it) ---------- */
+  const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+    if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); }
+  }), { rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll(".reveal").forEach((el, i) => { el.style.transitionDelay = `${(i % 5) * 70}ms`; io.observe(el); });
+
+  /* ---------- Program rail follows scroll ---------- */
+  const phasesEl = document.querySelector("[data-phases]");
+  const rail = phasesEl.querySelector(".phases__rail");
+  const phases = [...phasesEl.querySelectorAll(".phase")];
+  function railProgress() {
+    const r = phasesEl.getBoundingClientRect();
+    const p = Math.max(0, Math.min(1, (innerHeight * 0.75 - r.top) / (r.height + innerHeight * 0.2)));
+    rail.style.setProperty("--p", p.toFixed(3));
+    phases.forEach((ph, i) => ph.classList.toggle("is-lit", p >= i / phases.length + 0.02));
+  }
+  addEventListener("scroll", railProgress, { passive: true }); railProgress();
+
+  /* ---------- Night shift schedule ---------- */
+  const SHIFTS = {
+    dawn: {
+      clock: "05:00<small>AM</small>",
+      note: "For people who are done before the city wakes. Cold air, empty roads, first light at the end.",
+      rows: [
+        ["05:00", "Gargoyle Stretch", 1, "Mobility and breathwork to wake the joints"],
+        ["05:20", "Cave Strength", 3, "Deadlift, weighted pull-up and carry complex"],
+        ["06:00", "Rooftop Sprints", 3, "Stair and hill intervals, 30 s on, 30 s off"],
+        ["06:30", "Cold Watch", 2, "Cold plunge and a ten-minute focus sit"],
+      ],
+    },
+    dusk: {
+      clock: "21:00<small>PM</small>",
+      note: "For people who train when the city goes quiet. Lights low, music loud.",
+      rows: [
+        ["21:00", "Patrol Warm-up", 1, "Jump rope, shadow boxing and mobility"],
+        ["21:15", "Knuckle Rounds", 3, "Six 3-minute rounds of bag and pad work"],
+        ["21:45", "Grapnel Circuit", 3, "Pull-ups, rope climbs and box jumps, no rest"],
+        ["22:15", "Stillness", 1, "Breathwork and stretching before sleep"],
+      ],
+    },
+  };
+  const rowsEl = document.querySelector("[data-shift-rows]");
+  const clockEl = document.querySelector("[data-shift-clock]");
+  const noteEl = document.querySelector("[data-shift-note]");
+  const tabs = document.querySelectorAll("[data-shift]");
+  function showShift(key) {
+    const s = SHIFTS[key];
+    tabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.shift === key)));
+    clockEl.innerHTML = s.clock; noteEl.textContent = s.note;
+    rowsEl.replaceChildren(...s.rows.map(([time, name, lvl, what]) => {
+      const tr = document.createElement("tr");
+      const bars = [1, 2, 3].map((n) => `<i class="${n <= lvl ? "on" : ""}"></i>`).join("");
+      tr.innerHTML = `<td>${time}</td><td>${name}</td><td><span class="intensity" aria-label="Intensity ${lvl} of 3">${bars}</span></td><td>${what}</td>`;
+      return tr;
+    }));
+  }
+  tabs.forEach((t) => t.addEventListener("click", () => showShift(t.dataset.shift)));
+  showShift("dusk");
+
+  /* ---------- Signal section sky + form ---------- */
+  const sky = document.getElementById("signal-sky");
+  const sctx = sky.getContext("2d");
+  let skyOn = 0.25, skyTo = 0.25, skyRun = false;
+  function skyFrame(now) {
+    const w = sky.clientWidth, h = sky.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
+    if (sky.width !== Math.round(w * dpr)) { sky.width = Math.round(w * dpr); sky.height = Math.round(h * dpr); }
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    skyOn += (skyTo - skyOn) * 0.05;
+    sctx.clearRect(0, 0, w, h);
+    const cx = w * 0.78, cy = h * 0.3, rx = Math.min(w, h) * 0.34;
+    const g = sctx.createRadialGradient(cx, cy, 0, cx, cy, rx);
+    const f = 0.95 + Math.sin(now / 60) * 0.03;
+    g.addColorStop(0, `rgba(255,220,150,${0.55 * skyOn * f})`); g.addColorStop(0.7, `rgba(242,169,59,${0.3 * skyOn * f})`); g.addColorStop(1, "rgba(242,169,59,0)");
+    sctx.fillStyle = g; sctx.beginPath(); sctx.ellipse(cx, cy, rx, rx * 0.6, -0.1, 0, 7); sctx.fill();
+    sctx.save(); sctx.translate(cx, cy); sctx.rotate(-0.1); const k = rx * 1.3 / 200; sctx.scale(k, k);
+    sctx.fillStyle = `rgba(6,8,12,${Math.min(0.9, skyOn * 1.6)})`; sctx.fill(batPath); sctx.restore();
+    if (skyRun) requestAnimationFrame(skyFrame);
+  }
+  new IntersectionObserver(([en]) => {
+    const was = skyRun; skyRun = en.isIntersecting;
+    if (skyRun && !was) requestAnimationFrame(skyFrame);
+  }).observe(sky);
+
+  const form = document.getElementById("join");
+  const status = document.getElementById("f-status");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const f = form.elements;
+    const name = f.name.value.trim(), city = f.city.value.trim();
+    if (!name || !city) { status.textContent = "Add your name and city to light the signal."; (name ? f.city : f.name).focus(); return; }
+    skyTo = 1;
+    status.textContent = `Signal lit over ${city}. See you on the ${f.shift.value.split(" ·")[0].toLowerCase()} shift, ${name.split(" ")[0]}.`;
+  });
+})();
+</script>
+</body>
+</html>
