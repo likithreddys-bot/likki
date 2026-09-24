@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Likith Saribala</title>
+<meta name="description" content="Likith Saribala, ML engineer at Vaibhav Vyapaar. AI agents, voice AI and automations.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%236e2438'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-size='30' text-anchor='middle' fill='%23fbf0f2'%3ELS%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="hero" id="top" data-zone="none">
+  <div class="hero__glow" aria-hidden="true"></div>
+
+  <nav class="nav" aria-label="Main">
+    <a class="nav__brand" href="#top">Likith<span>.</span></a>
+    <ul class="nav__links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="stage" aria-hidden="true">
+    <div class="figure">
+      <img class="figure__photo" src="assets/likith.webp" width="1099" height="1341" alt="">
+      <span class="figure__rim figure__rim--left"></span>
+      <span class="figure__rim figure__rim--right"></span>
+    </div>
+    <div class="laptop">
+      <span class="laptop__logo">LS</span>
+      <span class="sticker sticker--jas">JAS</span>
+      <span class="sticker sticker--n8n">n8n</span>
+      <span class="sticker sticker--retell">retell</span>
+    </div>
+  </div>
+  <div class="desk" aria-hidden="true"></div>
+
+  <div class="intro">
+    <p class="intro__kicker">B.Tech CSE &rsquo;25</p>
+    <h1 class="intro__name">I&rsquo;m Likith Saribala</h1>
+    <p class="intro__role">ML Engineer</p>
+    <div class="hint">
+      <span class="hint__cursor" aria-hidden="true">
+        <svg viewBox="0 0 16 20" width="14" height="18"><path d="M1.5 1.5v14.2l3.9-3.6 2.6 6 2.4-1.1-2.6-5.9h5.3z" fill="currentColor" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="hint__text" data-hint>Move cursor to call me!</span>
+    </div>
+    <p class="zones" aria-hidden="true">
+      <span data-zone-dot="left">left</span>
+      <span data-zone-dot="center">center</span>
+      <span data-zone-dot="right">right</span>
+    </p>
+  </div>
+
+  <div class="talk" aria-live="polite"></div>
+
+  <a class="cue" href="#work">
+    <span>Explore the portfolio</span>
+    <span class="cue__line" aria-hidden="true"></span>
+  </a>
+</header>
+
+<main>
+  <section class="section" id="work" aria-labelledby="work-title">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="label">Selected work</p>
+        <h2 id="work-title">Things I&rsquo;ve built</h2>
+      </div>
+
+      <div class="work">
+        <article class="project project--feature">
+          <div class="project__body">
+            <p class="project__kind">Personal project</p>
+            <h3>JAS</h3>
+            <p class="project__lede">My personal AI assistant. It acts on whatever I ask, the way ChatGPT talks: it opens and searches my folders, reads my mail and sends replies, and plays songs and movies on request.</p>
+            <ul class="tags">
+              <li>LLM agent</li><li>Tool calling</li><li>Mail + files</li><li>Media control</li>
+            </ul>
+          </div>
+          <figure class="console" aria-label="Example commands for JAS">
+            <figcaption>Example commands</figcaption>
+            <ol>
+              <li><span class="console__you">open my Projects folder</span><span class="console__jas">Opened ~/Projects</span></li>
+              <li><span class="console__you">reply to the latest mail from HR</span><span class="console__jas">Draft ready. Send it?</span></li>
+              <li><span class="console__you">play something calm</span><span class="console__jas">Playing your focus playlist</span></li>
+            </ol>
+          </figure>
+        </article>
+
+        <article class="project">
+          <p class="project__kind">For Vaibhav Vyapaar</p>
+          <h3>Account Aggregator</h3>
+          <p>An Account Aggregator integration for my company: customers share their financial data from banks through India&rsquo;s consent-based AA framework, and the company works with it from there.</p>
+          <ul class="tags"><li>Fintech</li><li>Consent flow</li><li>Banking data</li></ul>
+        </article>
+
+        <article class="project">
+          <p class="project__kind">Dental clinic</p>
+          <h3>Voice receptionist</h3>
+          <p>An AI receptionist built on Retell for a dental clinic. It picks up calls, talks with patients in natural speech, and handles their questions about visits and appointments.</p>
+          <ul class="tags"><li>Voice AI</li><li>Retell</li><li>Healthcare</li></ul>
+        </article>
+
+        <article class="project">
+          <p class="project__kind">AI product</p>
+          <h3>AI Virtual Interviewer</h3>
+          <p>An interviewer that runs the conversation on its own. It asks the questions, listens to each answer, and follows up the way a human interviewer would.</p>
+          <ul class="tags"><li>LLM</li><li>Conversation design</li><li>Hiring</li></ul>
+        </article>
+
+        <article class="project">
+          <p class="project__kind">Automation</p>
+          <h3>n8n automations</h3>
+          <p>Workflows in n8n that connect apps, APIs and AI models, so repetitive work runs by itself instead of by hand.</p>
+          <ul class="tags"><li>n8n</li><li>Workflows</li><li>Integrations</li></ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--about" id="about" aria-labelledby="about-title">
+    <div class="wrap about">
+      <div>
+        <p class="label">About</p>
+        <h2 id="about-title">I build AI that does the work, not just the talking.</h2>
+        <p class="about__text">I&rsquo;m an ML engineer at Vaibhav Vyapaar. I finished my B.Tech in Computer Science and Engineering in 2025, and most of what I build is AI that takes action: agents that use real tools, voice bots that answer real phones, and automations that remove busywork.</p>
+      </div>
+      <div class="about__side">
+        <ol class="path" aria-label="Career path">
+          <li><span class="path__when">2025</span><span class="path__what">B.Tech, Computer Science &amp; Engineering</span></li>
+          <li><span class="path__when">Now</span><span class="path__what">ML Engineer, Vaibhav Vyapaar</span></li>
+        </ol>
+        <p class="label">Focus</p>
+        <ul class="tags tags--loose">
+          <li>LLM agents</li><li>Voice AI</li><li>Workflow automation</li><li>Fintech integrations</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--contact" id="contact" aria-labelledby="contact-title">
+    <div class="wrap contact">
+      <p class="label">Contact</p>
+      <h2 id="contact-title">Have a task that should run on its own?</h2>
+      <p class="contact__text">I&rsquo;m happy to talk about agents, voice AI or automation work.</p>
+      <a class="button" href="https://github.com/likithreddys-bot" target="_blank" rel="noopener">Find me on GitHub</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__row">
+    <span>&copy; 2026 Likith Saribala</span>
+    <a href="#top">Back to top</a>
+  </div>
+</footer>
+
+<script src="js/hero.js"></script>
+</body>
+</html>

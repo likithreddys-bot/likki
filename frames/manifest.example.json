@@ -1,0 +1,13 @@
+{
+  "pattern": "frames/f_{i}.webp",
+  "start": 1,
+  "pad": 4,
+  "count": 216,
+  "fps": 24,
+  "segments": {
+    "work":  [1, 48],
+    "left":  [49, 84],
+    "right": [85, 120],
+    "greet": [121, 216]
+  }
+}
