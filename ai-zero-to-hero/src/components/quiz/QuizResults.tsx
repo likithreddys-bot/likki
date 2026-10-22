@@ -42,7 +42,7 @@ export function QuizResults({
   const missed = result.review.filter((r) => !r.is_correct).length;
 
   return (
-    <div className="relative mx-auto flex w-full max-w-[760px] flex-col gap-9 px-4 pb-24 pt-12">
+    <div className="relative mx-auto flex w-full max-w-[760px] flex-col gap-9 px-4 pb-32 pt-36">
       {passed &&
         CONFETTI.map(([bg, pos, rot], i) => (
           <span key={i} aria-hidden className={cn('pointer-events-none absolute h-2.5 w-4 border-[1.5px] border-ink', bg, pos, rot)} />

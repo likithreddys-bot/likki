@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, BookOpen, Bot, ClipboardCheck, Flag, Layers, Trophy } from 'lucide-react';
 import { Logo, LogoMark } from '@/components/Logo';
 import { buttonVariants } from '@/components/ui/button';
-import { PatrolDuck, SittingSprite } from '@/components/duck/sprites';
+import { SittingSprite } from '@/components/duck/sprites';
 import { TrailTeaser } from '@/components/landing/TrailTeaser';
 import { cn } from '@/lib/utils';
 
@@ -155,9 +155,6 @@ export default function LandingPage() {
 
       {/* footer */}
       <footer className="relative bg-ink px-5 py-9 text-paper sm:px-20">
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-0">
-          <PatrolDuck height={100} className="bottom-0" delay={12} />
-        </div>
         <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-5 md:flex-row">
           <span className="inline-flex items-center gap-2.5">
             <LogoMark size={36} />

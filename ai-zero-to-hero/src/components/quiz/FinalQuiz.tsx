@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Check, Clock, DoorOpen } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { PatrolDuck, SittingSprite } from '@/components/duck/sprites';
+import { SittingSprite } from '@/components/duck/sprites';
 import { submitFinalQuizAction } from '@/lib/actions';
 import { cn } from '@/lib/utils';
 import { formatClock } from '@/lib/time';
@@ -207,10 +207,6 @@ export function FinalQuiz({ quiz, slug, topicTitle }: { quiz: FinalQuizPayload; 
         <Link href="/dashboard" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'text-soft')}>
           <DoorOpen size={16} /> Exit quiz
         </Link>
-      </div>
-
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-24">
-        <PatrolDuck height={88} className="bottom-2" delay={5} />
       </div>
     </div>
   );

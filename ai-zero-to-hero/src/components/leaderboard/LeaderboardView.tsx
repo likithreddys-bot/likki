@@ -1,6 +1,6 @@
 import { TopBar } from '@/components/TopBar';
 import { LeaderboardTable } from '@/components/leaderboard/LeaderboardTable';
-import { PatrolDuck, SittingSprite } from '@/components/duck/sprites';
+import { SittingSprite } from '@/components/duck/sprites';
 import type { LeaderboardRow, Profile } from '@/lib/types';
 
 export function LeaderboardView({
@@ -30,7 +30,6 @@ export function LeaderboardView({
           <LeaderboardTable initialRows={rows} initialMe={me} meId={profile.id} subscribe={subscribe} />
         </main>
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-28">
-          <PatrolDuck height={92} className="bottom-2" delay={31} />
           <p className="hand absolute bottom-3 left-[30%] hidden -rotate-2 text-[26px] text-pink lg:block">catch up by passing quizzes — +100 XP each</p>
         </div>
       </div>

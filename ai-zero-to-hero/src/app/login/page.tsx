@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { AuthForm } from '@/components/auth/AuthForm';
 import { Logo } from '@/components/Logo';
 import { SetupNotice } from '@/components/SetupNotice';
-import { SittingSprite, PatrolDuck } from '@/components/duck/sprites';
+import { SittingSprite } from '@/components/duck/sprites';
 import { getSupabaseEnv } from '@/lib/supabase/env';
 
 export const metadata: Metadata = { title: 'Log in' };
@@ -17,9 +17,6 @@ export default function LoginPage({ searchParams }: { searchParams: { next?: str
       <svg aria-hidden className="absolute inset-x-0 bottom-0 h-[200px] w-full" preserveAspectRatio="none" viewBox="0 0 1440 200">
         <path d="M-10 150 C 200 60, 380 190, 560 120 S 900 40, 1100 140 S 1350 100, 1450 130" fill="none" stroke="rgb(var(--ink))" strokeWidth="4" strokeLinecap="round" strokeDasharray="1 14" />
       </svg>
-      <div aria-hidden className="absolute inset-x-0 bottom-6 h-[120px]">
-        <PatrolDuck height={130} className="bottom-0" delay={14} />
-      </div>
 
       <div className="relative w-full max-w-[460px]">
         <div className="pointer-events-none absolute -top-[110px] right-6 hidden sm:block">

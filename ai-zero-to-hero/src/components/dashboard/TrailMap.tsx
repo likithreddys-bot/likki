@@ -2,7 +2,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { buildTrail, DASHBOARD_NODES, type TrailNode } from '@/lib/trail';
 import type { TopicView } from '@/lib/rank';
-import { PatrolDuck } from '@/components/duck/sprites';
 import { TrailDuck } from '@/components/duck/TrailDuck';
 import { StopNode } from './StopNode';
 import { TopicStopCard } from './TopicStopCard';
@@ -121,14 +120,11 @@ function DesktopTrail({ views, currentIndex, userKey }: { views: TopicView[]; cu
 
         <TrailDuck elRef={duck.elRef} moving={duck.moving} facing={duck.facing} ready={duck.ready} walkHeight={120} sitHeight={160} sitLift={40} />
 
-        {/* A second little robot just plays along the bottom edge. */}
+        {/* The little robot that strolls along every page's bottom edge is rendered once, in the root layout. */}
         <div className="absolute left-0 w-full" style={{ top: 1092 }} aria-hidden>
           <svg width={STAGE_W} height={80} className="absolute left-0 top-0">
             <path d="M0 50 C 200 10, 400 70, 640 40 S 1000 10, 1344 45" fill="none" stroke="rgb(var(--ink))" strokeWidth={3} strokeLinecap="round" strokeDasharray="1 12" />
           </svg>
-          <div className="relative h-[90px]">
-            <PatrolDuck height={92} className="top-[-30px]" delay={8} />
-          </div>
           <p className="hand absolute left-[330px] top-[22px] -rotate-2 text-[26px] text-pink">just out for a stroll — i’ll walk to wherever you are</p>
         </div>
       </div>

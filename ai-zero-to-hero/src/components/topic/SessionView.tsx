@@ -1,5 +1,4 @@
 import { TopBar } from '@/components/TopBar';
-import { PatrolDuck } from '@/components/duck/sprites';
 import { CompleteBar } from '@/components/topic/CompleteBar';
 import { InlineQuiz } from '@/components/topic/InlineQuiz';
 import { Markdown } from '@/components/topic/Markdown';
@@ -92,10 +91,6 @@ export function SessionView({
               nextTitle={next?.title}
             />
           </main>
-        </div>
-        {/* a little robot strolls along the bottom of the page */}
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-28">
-          <PatrolDuck height={92} className="bottom-2" delay={20} />
         </div>
       </div>
     </>

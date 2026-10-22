@@ -100,3 +100,11 @@
 .duck-patrol > .duck-flip {
   animation: duck-flip 60s steps(1, end) infinite;
 }
+
+/* On phones the stroll is a bit shorter so the duck still visibly gets somewhere. */
+@media (max-width: 640px) {
+  .duck-patrol,
+  .duck-patrol > .duck-flip {
+    animation-duration: 40s;
+  }
+}
