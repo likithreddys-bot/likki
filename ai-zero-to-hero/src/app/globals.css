@@ -71,40 +71,10 @@
   .animate-plop,
   .animate-breathe,
   .animate-pulse-ring,
-  .animate-rise,
-  .duck-patrol {
+  .animate-rise {
     animation: none !important;
   }
   .animate-frame-b {
     opacity: 0;
-  }
-}
-
-/* Patrol: the little robot strolls along an edge and turns around at each end. */
-@keyframes duck-patrol {
-  0% { left: 2%; }
-  47% { left: calc(98% - var(--duck-w, 80px)); }
-  50% { left: calc(98% - var(--duck-w, 80px)); }
-  97% { left: 2%; }
-  100% { left: 2%; }
-}
-@keyframes duck-flip {
-  0%, 48.9% { transform: scaleX(1); }
-  49%, 98.9% { transform: scaleX(-1); }
-  99%, 100% { transform: scaleX(1); }
-}
-.duck-patrol {
-  position: absolute;
-  animation: duck-patrol 60s linear infinite;
-}
-.duck-patrol > .duck-flip {
-  animation: duck-flip 60s steps(1, end) infinite;
-}
-
-/* On phones the stroll is a bit shorter so the duck still visibly gets somewhere. */
-@media (max-width: 640px) {
-  .duck-patrol,
-  .duck-patrol > .duck-flip {
-    animation-duration: 40s;
   }
 }

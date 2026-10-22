@@ -73,7 +73,7 @@ All the game rules live in Postgres (`supabase/migrations/0001_init.sql`), **not
 - `src/components/duck/*` — sprites (walking frames swap with CSS, waddle, sit "plop", breathing) and the `useTrailWalker` hook.
 - On the dashboard the duck remembers the last stop it sat on (localStorage), walks from there to your **current** topic, sits, and says "you are here!". Hover or focus an open topic and it waddles over to visit, then returns.
 - On the landing page it tours the six stops forwards and backwards.
-- **A duck walks on every page.** `GlobalDuck` (in the root layout) strolls along the bottom of the window on every route — landing, login, trail, topics, quizzes, results, leaderboard, setup, 404 and error screens — turning around at each edge. It's pure CSS, never blocks clicks, and is shorter-paced on phones.
+- **A duck walks across the content of every page.** `RoamingDuck` (in the root layout) picks a spot anywhere in the visible page, waddles there at a steady ~46 px/s (turning to face where it's going), sits for a few seconds, then heads somewhere else — usually across to the other side. It floats above the page on every route (landing, login, trail, topics, quizzes, results, leaderboard, setup, 404 and error screens), never blocks clicks, and under reduced motion it just sits in the bottom-right corner. The movement rules are in `src/lib/roam.ts` (unit tested).
 - Respects `prefers-reduced-motion` (the duck simply appears at the right stop).
 
 The robot images were generated with Higgsfield (pink/orange/yellow palette, background removed) and live in `public/robot/`.
@@ -107,7 +107,7 @@ Tokens come from the Figma variable collection **Tokens** and are applied as CSS
 | `npm run seed:generate` | Rebuilds `supabase/seed.sql` |
 | `node scripts/screenshots.mjs` | Screenshots the design preview screens (needs `npm run dev`) |
 | `node scripts/check-duck.mjs` | Samples the duck's position over time to prove it walks, slowly, and sits |
-| `node scripts/check-patrol.mjs` | Proves a duck walks on every page (10 routes × desktop and phone) and stands still under reduced motion |
+| `node scripts/check-roaming.mjs` | Proves the duck walks across the content on every page (10 routes × desktop and phone), rests and walks again, and stands still under reduced motion |
 
 **Design preview (development only):** `/preview/dashboard`, `/preview/session`, `/preview/quiz`, `/preview/results`, `/preview/leaderboard` render the real screens from fixture data without a database. They return 404 in production builds.
 

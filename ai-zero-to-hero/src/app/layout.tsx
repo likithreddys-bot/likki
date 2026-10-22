@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { GlobalDuck } from '@/components/duck/GlobalDuck';
+import { RoamingDuck } from '@/components/duck/RoamingDuck';
 
 export const metadata: Metadata = {
   title: { default: 'AI Zero to Hero', template: '%s · AI Zero to Hero' },
@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-screen">
         {children}
-        <GlobalDuck />
+        <RoamingDuck />
       </body>
     </html>
   );

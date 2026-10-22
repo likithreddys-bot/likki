@@ -63,19 +63,3 @@ export function SittingSprite({ height, flip = false, className }: { height: num
     </div>
   );
 }
-
-/** A duck that strolls back and forth along the bottom edge of its (relative) parent. Pure CSS. */
-export function PatrolDuck({ height = 84, className, delay = 0 }: { height?: number; className?: string; delay?: number }) {
-  const width = Math.round(height * WALK_AR);
-  return (
-    <div
-      aria-hidden
-      className={cn('duck-patrol pointer-events-none', className)}
-      style={{ ['--duck-w' as string]: `${width}px`, animationDelay: `-${delay}s` }}
-    >
-      <div className="duck-flip" style={{ animationDelay: `-${delay}s` }}>
-        <WalkingSprite height={height} />
-      </div>
-    </div>
-  );
-}
