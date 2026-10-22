@@ -1,0 +1,102 @@
+@import '@fontsource-variable/fraunces/wonk.css';
+@import '@fontsource-variable/inter/index.css';
+@import '@fontsource/caveat/400.css';
+@import '@fontsource/caveat/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens — extracted from the Figma variable collection "Tokens" (RGB channels). */
+:root {
+  --paper: 251 243 231; /* color/paper   #FBF3E7 */
+  --paper-2: 244 232 213; /* color/paper2  #F4E8D5 */
+  --card: 255 253 248; /* color/card    #FFFDF8 */
+  --ink: 35 26 23; /* color/ink     #231A17 */
+  --soft: 110 95 85; /* color/soft    #6E5F55 */
+  --pink: 229 48 127; /* color/pink    #E5307F */
+  --pink-soft: 255 211 228; /* color/pink-soft #FFD3E4 */
+  --pink-deep: 184 31 94; /* color/pink-deep #B81F5E */
+  --orange: 245 130 31; /* color/orange  #F5821F */
+  --yellow: 247 185 40; /* color/yellow  #F7B928 */
+  --cream: 239 227 204; /* color/cream   #EFE3CC */
+  --green: 63 143 91; /* color/green   #3F8F5B */
+  --red: 214 64 47; /* color/red     #D6402F */
+  --gold: 247 185 40;
+  --silver: 201 194 184;
+  --bronze: 199 123 62;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+  ::selection {
+    background: rgb(var(--pink-soft));
+  }
+  :focus-visible {
+    outline: 3px solid rgb(var(--pink));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .font-display-black {
+    @apply font-display font-black tracking-[-0.03em];
+    font-variation-settings: 'WONK' 1;
+  }
+  .font-display-bold {
+    @apply font-display font-bold tracking-[-0.015em];
+    font-variation-settings: 'WONK' 1;
+  }
+  .sticker {
+    @apply rounded-card border-2.5 border-ink bg-card shadow-hard-md;
+  }
+  .hand {
+    @apply font-hand font-bold;
+  }
+  .eyebrow {
+    @apply font-sans text-[11px] font-bold uppercase tracking-[0.1em];
+  }
+}
+
+/* Ducks: no motion for people who ask for none. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-waddle,
+  .animate-frame-a,
+  .animate-frame-b,
+  .animate-plop,
+  .animate-breathe,
+  .animate-pulse-ring,
+  .animate-rise,
+  .duck-patrol {
+    animation: none !important;
+  }
+  .animate-frame-b {
+    opacity: 0;
+  }
+}
+
+/* Patrol: the little robot strolls along an edge and turns around at each end. */
+@keyframes duck-patrol {
+  0% { left: 2%; }
+  47% { left: calc(98% - var(--duck-w, 80px)); }
+  50% { left: calc(98% - var(--duck-w, 80px)); }
+  97% { left: 2%; }
+  100% { left: 2%; }
+}
+@keyframes duck-flip {
+  0%, 48.9% { transform: scaleX(1); }
+  49%, 98.9% { transform: scaleX(-1); }
+  99%, 100% { transform: scaleX(1); }
+}
+.duck-patrol {
+  position: absolute;
+  animation: duck-patrol 60s linear infinite;
+}
+.duck-patrol > .duck-flip {
+  animation: duck-flip 60s steps(1, end) infinite;
+}
