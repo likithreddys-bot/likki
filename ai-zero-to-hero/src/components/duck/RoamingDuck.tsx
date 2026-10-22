@@ -13,8 +13,8 @@ const REFRESH_MS = 400; // how often it re-reads where the text is
  * The page duck. It wanders around the page — but never across the text: it reads where the text,
  * buttons and inputs currently are, plans its route through the free space around them, waddles there
  * (turning to face where it is going), sits for a few seconds, then heads somewhere else. If text scrolls
- * under it, it steps out of the way; if the page leaves no free room at all, it quietly disappears until
- * some appears. It floats above the page, never blocks clicks, and under prefers-reduced-motion it just sits
+ * under it, it steps out of the way; if the page leaves it no clear route anywhere, it quietly disappears until
+ * some room appears. It floats above the page, never blocks clicks, and under prefers-reduced-motion it just sits
  * still in a free corner.
  */
 export function RoamingDuck() {
@@ -44,6 +44,7 @@ export function RoamingDuck() {
     let path: Vec[] = [];
     let pi = 1;
     let walking = false;
+    let boxed = false; // no clear room anywhere: stay hidden until some appears
     let facingNow: 1 | -1 = 1;
     let raf: number | null = null;
     let lastT = 0;
@@ -109,6 +110,7 @@ export function RoamingDuck() {
 
     /** Nowhere free on screen right now: vanish, and look again shortly. */
     const hideAndRetry = () => {
+      boxed = true;
       stopWalking();
       show(false);
       scheduleRest(1500);
@@ -127,6 +129,7 @@ export function RoamingDuck() {
     const evict = () => {
       const free = pos && nearestFree(grid, pos);
       if (!pos || !free) return hideAndRetry();
+      boxed = false;
       show(true);
       target = free;
       beginWalk([pos, free]);
@@ -139,7 +142,9 @@ export function RoamingDuck() {
       if (!isFree(grid, pos)) return evict();
       const t = pickTarget(grid, pos, Math.random);
       const p = t ? findPath(grid, pos, t) : null;
-      if (!t || !p) return scheduleRest(3500); // boxed in for now
+      if (!t || !p) return hideAndRetry(); // nowhere clear to go: vanish, look again shortly
+      boxed = false;
+      show(true);
       target = t;
       beginWalk(p);
     }
@@ -160,7 +165,7 @@ export function RoamingDuck() {
         }
         return evict();
       }
-      show(true);
+      if (!boxed) show(true);
       if (walking && target) {
         let next = findPath(grid, pos, target);
         if (!next) {

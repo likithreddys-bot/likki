@@ -4,7 +4,7 @@
  *   BASE_URL=http://localhost:3000 node scripts/check-roaming.mjs
  *
  * Per route, at desktop and phone size, it samples the duck for ~7s and requires: exactly one duck, sprites
- * loaded, it walks (not teleports) at a slow duck-like speed (on a phone with no clear route it may sit in a gap instead), covers real distance, and stays inside the window.
+ * loaded, it walks (not teleports) at a slow duck-like speed (on a phone with no clear route it may hide instead), covers real distance, and stays inside the window.
  * It also requires that the duck's sprite NEVER overlaps text, buttons, links or inputs (the page is static while sampling).
  * Then a longer run on one page requires that it rests, sits and walks again, using the page's height as well as its width.
  * Finally it checks that under reduced motion the duck stays put.
@@ -73,6 +73,7 @@ const read = (page) =>
       vh: window.innerHeight,
       t: performance.now(),
       hits: overlaps(el),
+      hidden: el.style.opacity === '0',
     };
   }, OVERLAPS);
 
@@ -112,16 +113,16 @@ for (const [vpName, viewport] of VIEWPORTS) {
     }
     const sp = median(speeds);
     const inView = s.every((r) => r.x >= 0 && r.x <= r.vw && r.y >= 0 && r.y <= r.vh + 1);
-    const boxedIn = viewport.width < 640 && walked === 0 && s.every((r) => r.pose === 'sitting');
+    const boxedIn = viewport.width < 640 && walked === 0 && s.every((r) => r.hidden);
     const overlapSamples = s.filter((r) => r.hits > 0).length;
     const ok =
       overlapSamples === 0 &&
       s.every((r) => r.count === 1 && r.loaded) &&
-      // on a phone, full-width text can leave no clear route: then the duck must simply sit in a gap (never on text)
+      // on a phone, full-width text can leave no clear route: then the duck must hide (never sit on text)
       (boxedIn || (s.some((r) => r.pose === 'walking') && sp > 35 && sp < 60 && walked > (viewport.width < 640 ? 40 : 150))) &&
       inView && errs.length === 0;
     if (!ok) failures++;
-    rows.push({ viewport: vpName, page: name, ducks: s[0].count, walked_px: Math.round(walked), 'median px/s': Math.round(sp), 'inside window': inView, 'samples on text': overlapSamples, 'boxed in (sits in a gap)': boxedIn, ok: ok ? 'yes' : 'NO', errors: errs.join('; ') });
+    rows.push({ viewport: vpName, page: name, ducks: s[0].count, walked_px: Math.round(walked), 'median px/s': Math.round(sp), 'inside window': inView, 'samples on text': overlapSamples, 'hidden (no room)': boxedIn, ok: ok ? 'yes' : 'NO', errors: errs.join('; ') });
     await page.close();
   }
 }
