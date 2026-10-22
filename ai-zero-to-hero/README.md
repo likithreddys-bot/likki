@@ -73,8 +73,9 @@ All the game rules live in Postgres (`supabase/migrations/0001_init.sql`), **not
 - `src/components/duck/*` — sprites (walking frames swap with CSS, waddle, sit "plop", breathing) and the `useTrailWalker` hook.
 - On the dashboard the duck remembers the last stop it sat on (localStorage), walks from there to your **current** topic, sits, and says "you are here!". Hover or focus an open topic and it waddles over to visit, then returns.
 - On the landing page it tours the six stops forwards and backwards.
-- **A duck walks across the content of every page.** `RoamingDuck` (in the root layout) picks a spot anywhere in the visible page, waddles there at a steady ~46 px/s (turning to face where it's going), sits for a few seconds, then heads somewhere else — usually across to the other side. It floats above the page on every route (landing, login, trail, topics, quizzes, results, leaderboard, setup, 404 and error screens), never blocks clicks, and under reduced motion it just sits in the bottom-right corner. The movement rules are in `src/lib/roam.ts` (unit tested).
-- Respects `prefers-reduced-motion` (the duck simply appears at the right stop).
+- **A duck wanders every page — but keeps off the text.** `RoamingDuck` (in the root layout) reads where the text lines, buttons, links and inputs are on screen right now, plans a route through the free space around them (grid + A\*), waddles there at a steady ~46 px/s (turning to face where it's going), sits for a few seconds, then heads somewhere else — usually to the other side. If you scroll or resize and text lands under it, it steps out of the way. It floats above the page on every route, never blocks clicks, and doesn't read or send anything — it only measures element boxes in your browser. The planning rules are in `src/lib/roam.ts` (unit tested); the DOM scan is `src/components/duck/obstacles.ts`. Mark something the duck may walk over with `data-duck-ignore`.
+  - On narrow phones, full-width text can leave little or no clear space: the duck then makes short walks, or just sits in a gap, rather than cross the text.
+- Respects `prefers-reduced-motion`: on the trail the duck simply appears at the right stop, and the page duck stays put in a clear spot instead of walking.
 
 The robot images were generated with Higgsfield (pink/orange/yellow palette, background removed) and live in `public/robot/`.
 
@@ -107,7 +108,7 @@ Tokens come from the Figma variable collection **Tokens** and are applied as CSS
 | `npm run seed:generate` | Rebuilds `supabase/seed.sql` |
 | `node scripts/screenshots.mjs` | Screenshots the design preview screens (needs `npm run dev`) |
 | `node scripts/check-duck.mjs` | Samples the duck's position over time to prove it walks, slowly, and sits |
-| `node scripts/check-roaming.mjs` | Proves the duck walks across the content on every page (10 routes × desktop and phone), rests and walks again, and stands still under reduced motion |
+| `node scripts/check-roaming.mjs` | Proves the duck walks at ~46 px/s on every page (10 routes × desktop and phone) **without ever overlapping text or controls** (also while scrolling), rests and walks again, and stands still under reduced motion |
 
 **Design preview (development only):** `/preview/dashboard`, `/preview/session`, `/preview/quiz`, `/preview/results`, `/preview/leaderboard` render the real screens from fixture data without a database. They return 404 in production builds.
 
