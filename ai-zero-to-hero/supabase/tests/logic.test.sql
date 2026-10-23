@@ -73,12 +73,12 @@ select test.assert((select xp = 0 and streak = 0 and rank = 'Beginner' from publ
 
 -- ───────────────────────── seed shape ─────────────────────────
 select test.assert((select count(*) from public.topics) = 10, '10 topics seeded');
-select test.assert((select count(*) from public.sessions) = 51, '51 sessions seeded');
-select test.assert((select count(*) from public.inline_quizzes) = 66, '66 inline quizzes seeded (6+6+6+7+6+8+6+7+7+7)');
+select test.assert((select count(*) from public.sessions) = 63, '63 sessions seeded');
+select test.assert((select count(*) from public.inline_quizzes) = 78, '78 inline quizzes seeded (8+8+8+9+8+10+6+7+7+7)');
 select test.assert((select count(*) from public.final_quizzes) = 10, '10 final quizzes seeded');
 select test.assert((select string_agg(jsonb_array_length(questions)::text, ',' order by t.order_index)
-                      from public.final_quizzes f join public.topics t on t.id = f.topic_id) = '8,8,8,10,8,10,10,10,10,10',
-                   'final quiz sizes are 8,8,8,10,8,10,10,10,10,10');
+                      from public.final_quizzes f join public.topics t on t.id = f.topic_id) = '10,10,10,12,10,12,10,10,10,10',
+                   'final quiz sizes are 10,10,10,12,10,12,10,10,10,10');
 
 -- ───────────────────────── rank thresholds ─────────────────────────
 select test.assert(public.rank_for_xp(0)   = 'Beginner', 'rank 0 = Beginner');
@@ -98,7 +98,7 @@ select test.assert((select (public.get_dashboard() -> 0 ->> 'unlocked')::boolean
 select test.assert((select not bool_or((d ->> 'unlocked')::boolean) from jsonb_array_elements(public.get_dashboard()) d where (d ->> 'order_index')::int > 1),
                    'topics 2-10 start locked');
 select test.assert((select count(distinct topic_id) from public.sessions) = 1, 'RLS: only topic 1 sessions are readable while others are locked');
-select test.assert((select count(*) from public.inline_quizzes) = 6, 'RLS: only topic 1 inline quizzes are readable');
+select test.assert((select count(*) from public.inline_quizzes) = 8, 'RLS: only topic 1 inline quizzes are readable');
 select test.expect_error($$ select count(*) from public.final_quizzes $$, 'permission denied');
 select test.expect_error($$ select public.complete_session(test.sid('how-ai-models-work', 1)) $$, 'locked');
 select test.expect_error($$ select public.get_final_quiz((select id from public.topics where slug = 'how-ai-models-work')) $$, 'locked');
@@ -114,7 +114,7 @@ select public.complete_session(test.sid('what-is-ai', 1));
 select test.expect_error($$ select public.get_final_quiz((select id from public.topics where slug = 'what-is-ai')) $$, 'finish all sessions');
 select test.assert((public.complete_session(test.sid('what-is-ai', 1)) ->> 'completed_count')::int = 1, 'completing a session twice is idempotent');
 select test.complete_all('what-is-ai');
-select test.assert((select (d ->> 'completed_count')::int = 5 from jsonb_array_elements(public.get_dashboard()) d where d ->> 'slug' = 'what-is-ai'), '5 of 5 sessions counted');
+select test.assert((select (d ->> 'completed_count')::int = 7 from jsonb_array_elements(public.get_dashboard()) d where d ->> 'slug' = 'what-is-ai'), '7 of 7 sessions counted');
 
 -- streak starts at 1 after first activity
 reset role;
@@ -125,33 +125,33 @@ select set_config('test.uid', :'uid_a', false) \gset
 set role authenticated;
 select test.assert((public.get_final_quiz((select id from public.topics where slug = 'what-is-ai')) -> 'questions' -> 0) ? 'correct_index' = false, 'get_final_quiz hides correct_index');
 select test.assert((public.get_final_quiz((select id from public.topics where slug = 'what-is-ai')) -> 'questions' -> 0) ? 'explanation' = false, 'get_final_quiz hides explanations');
-select test.assert(jsonb_array_length(public.get_final_quiz((select id from public.topics where slug = 'what-is-ai')) -> 'questions') = 8, 'topic 1 quiz has 8 questions');
+select test.assert(jsonb_array_length(public.get_final_quiz((select id from public.topics where slug = 'what-is-ai')) -> 'questions') = 10, 'topic 1 quiz has 10 questions');
 
 -- wrong answer count is rejected
-select test.expect_error($$ select public.submit_final_quiz((select id from public.topics where slug = 'what-is-ai'), '[0,1]'::jsonb) $$, 'expected 8 answers');
+select test.expect_error($$ select public.submit_final_quiz((select id from public.topics where slug = 'what-is-ai'), '[0,1]'::jsonb) $$, 'expected 10 answers');
 
--- 5/8 = 63% fails (< 70)
-select public.submit_final_quiz((select id from public.topics where slug = 'what-is-ai'), test.answers('what-is-ai', 5)) as r \gset
-select test.assert((:'r'::jsonb ->> 'score')::int = 63 and (:'r'::jsonb ->> 'passed')::boolean = false, '5/8 = 63% does not pass');
+-- 6/10 = 60% fails (< 70)
+select public.submit_final_quiz((select id from public.topics where slug = 'what-is-ai'), test.answers('what-is-ai', 6)) as r \gset
+select test.assert((:'r'::jsonb ->> 'score')::int = 60 and (:'r'::jsonb ->> 'passed')::boolean = false, '6/10 = 60% does not pass');
 reset role;
 select test.assert((select xp from public.users_profile where id = :'uid_a') = 0, 'failed attempt awards no XP');
 select set_config('test.uid', :'uid_a', false) \gset
 set role authenticated;
 select test.assert((select not (d ->> 'unlocked')::boolean from jsonb_array_elements(public.get_dashboard()) d where d ->> 'slug' = 'how-ai-models-work'), 'topic 2 stays locked after a failed quiz');
 
--- 6/8 = 75% passes
-select public.submit_final_quiz((select id from public.topics where slug = 'what-is-ai'), test.answers('what-is-ai', 6)) as r \gset
-select test.assert((:'r'::jsonb ->> 'score')::int = 75 and (:'r'::jsonb ->> 'passed')::boolean, '6/8 = 75% passes');
+-- 7/10 = 70% passes (exactly the threshold)
+select public.submit_final_quiz((select id from public.topics where slug = 'what-is-ai'), test.answers('what-is-ai', 7)) as r \gset
+select test.assert((:'r'::jsonb ->> 'score')::int = 70 and (:'r'::jsonb ->> 'passed')::boolean, '7/10 = 70% passes');
 select test.assert((:'r'::jsonb ->> 'first_pass')::boolean and (:'r'::jsonb ->> 'xp_awarded')::int = 100, 'first pass awards +100 XP');
 select test.assert((:'r'::jsonb ->> 'xp')::int = 100 and :'r'::jsonb ->> 'rank' = 'Explorer', '100 XP = Explorer');
 select test.assert(:'r'::jsonb ->> 'next_topic_slug' = 'how-ai-models-work', 'result points to the next topic');
-select test.assert(jsonb_array_length(:'r'::jsonb -> 'review') = 8 and (:'r'::jsonb -> 'review' -> 0) ? 'correct_index', 'review includes answers after submitting');
+select test.assert(jsonb_array_length(:'r'::jsonb -> 'review') = 10 and (:'r'::jsonb -> 'review' -> 0) ? 'correct_index', 'review includes answers after submitting');
 select test.assert((select (d ->> 'unlocked')::boolean from jsonb_array_elements(public.get_dashboard()) d where d ->> 'slug' = 'how-ai-models-work'), 'topic 2 unlocks after passing topic 1');
 select test.assert((select not (d ->> 'unlocked')::boolean from jsonb_array_elements(public.get_dashboard()) d where d ->> 'slug' = 'ai-tools-landscape'), 'topic 3 is still locked');
 select test.assert((select count(distinct topic_id) from public.sessions) = 2, 'RLS: topic 2 sessions are now readable');
 
 -- re-passing (even with a perfect score) never awards XP twice, best score is kept
-select public.submit_final_quiz((select id from public.topics where slug = 'what-is-ai'), test.answers('what-is-ai', 8)) as r \gset
+select public.submit_final_quiz((select id from public.topics where slug = 'what-is-ai'), test.answers('what-is-ai', 10)) as r \gset
 select test.assert((:'r'::jsonb ->> 'xp_awarded')::int = 0 and (:'r'::jsonb ->> 'xp')::int = 100, 'second pass awards no extra XP');
 select public.submit_final_quiz((select id from public.topics where slug = 'what-is-ai'), test.answers('what-is-ai', 0)) as r \gset
 select test.assert((select (d ->> 'quiz_passed')::boolean and (d ->> 'best_score')::int = 100 from jsonb_array_elements(public.get_dashboard()) d where d ->> 'slug' = 'what-is-ai'),

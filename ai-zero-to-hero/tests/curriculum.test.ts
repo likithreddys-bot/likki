@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { curriculum, EXPECTED, shuffledCurriculum, shuffleQuiz, TOTALS } from '../src/content/curriculum';
+import { advancedExtras, curriculum, EXPECTED, shuffledCurriculum, shuffleQuiz, TOTALS } from '../src/content/curriculum';
 import type { QuizItem } from '../src/content/types';
 
 const allQuizzes = (topics = curriculum): QuizItem[] =>
@@ -32,6 +32,11 @@ describe('curriculum matches the spec', () => {
     expect(curriculum).toHaveLength(TOTALS.topics);
     expect(curriculum.reduce((c, t) => c + t.sessions.length, 0)).toBe(TOTALS.sessions);
     expect(TOTALS.sessions).toBeGreaterThanOrEqual(31);
+  });
+
+  it('every advanced extra belongs to a real topic', () => {
+    const slugs = new Set(curriculum.map((t) => t.slug));
+    for (const slug of Object.keys(advancedExtras)) expect(slugs.has(slug)).toBe(true);
   });
 
   it('topic slugs are unique', () => {

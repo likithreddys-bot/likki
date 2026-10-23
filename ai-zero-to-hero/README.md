@@ -2,7 +2,7 @@
 
 A gamified, unlock-based learning platform that takes complete beginners (data analysts with zero AI knowledge) from "What is AI?" to building their own research assistant with Claude.
 
-- **10 topics · 51 sessions · 66 practice questions · 92 final-quiz questions** — six foundation topics, then an advanced track for working analysts: AI for data analysis, your own data (RAG), agents and tool use, and evaluating and shipping AI.
+- **10 topics · 63 sessions · 78 practice questions · 104 final-quiz questions** — six foundation topics (each ending with two advanced sessions: bias, project life-cycle, transformers, fine-tuning and feedback, open vs closed models, choosing tools, structured outputs, prompt chaining, API errors and retries, safe backends, long documents, and a Claude analysis workflow), then an advanced track for working analysts: AI for data analysis, your own data (RAG), agents and tool use, and evaluating and shipping AI.
 - Pass each topic's final quiz with **70%** to unlock the next one. Practice questions never block you.
 - Earn **+100 XP** per topic, keep a daily **streak**, climb ranks (**Beginner → Explorer → Builder → AI Pro**; thresholds are fixed at 100/300/500 XP, so AI Pro is reached after five topics) and watch a live **leaderboard**.
 - A little robot duck (Bolt) **walks the roadmap** — slowly, with a waddle — to the topic you're on, and sits down on it.
@@ -81,7 +81,7 @@ The robot images were generated with Higgsfield (pink/orange/yellow palette, bac
 
 ## Curriculum content
 
-Single source of truth: `src/content/topics/*.ts` (Markdown theory, practice questions, final quiz, videos).
+Single source of truth: `src/content/topics/*.ts` (Markdown theory, practice questions, final quiz, videos). The advanced sessions and extra final-quiz questions for topics 1–6 live in `src/content/advanced/*.ts` and are appended to their topics.
 
 ```bash
 npm run seed:generate    # regenerates supabase/seed.sql from the content files

@@ -194,8 +194,92 @@ insert into public.inline_quizzes (session_id, question, options, correct_index,
 values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'what-is-ai' and s.order_index = 5),
   'An assistant gives you a statistic that sounds precise. What should you do before using it in a report?', '["Use it — it sounded confident","Ask the assistant to say it louder","Round it to the nearest ten","Verify it against a trusted source"]'::jsonb, 3, 'Assistants can sound certain and still be wrong, so verify numbers and facts that matter.', 1);
 
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'what-is-ai'), 'Bias, fairness and where AI goes wrong', '## AI learns from the past — including its flaws
+
+A model finds patterns in the data it is given. If that data reflects an unfair or incomplete picture of the world, the model learns the same picture and repeats it at scale. This is called **bias**, and it is one of the most important things for anyone using AI at work to understand.
+
+## Where bias comes from
+
+- **Unrepresentative data.** A face-recognition system trained mostly on one group performs worse on others.
+- **Historical decisions.** A hiring model trained on past hiring learns who *was* hired, not who *should* have been.
+- **Proxies.** Even if you remove a sensitive column such as gender, other columns (postcode, school, job title) can stand in for it.
+- **Labels written by people.** If the "right answers" came from humans with their own blind spots, the model inherits them.
+- **Measurement choices.** Optimising one number (clicks, speed) can quietly harm another goal.
+
+## Other ways AI goes wrong
+
+- **Hallucination** — fluent text that is simply false.
+- **Overconfidence** — a score of 0.97 looks precise but may be badly calibrated.
+- **Distribution shift** — the world changes and the model''s patterns go stale.
+- **Misuse** — a tool built for one purpose gets applied to another.
+
+## What an analyst can do
+
+1. **Look at who is in the data** and who is missing.
+2. **Break results down by group.** Overall accuracy of 90% can hide 70% for a smaller group.
+3. **Ask what a wrong answer costs** and for whom.
+4. **Keep a human in the loop** for decisions that affect people.
+5. **Document** what the model is for, what it is *not* for, and how it was tested.
+
+> **Analyst tip:** an average can hide a problem. Whenever you report a model''s accuracy, ask "accuracy for whom?"
+
+## Key takeaways
+
+- Models copy the patterns in their data, including unfair ones.
+- Removing a sensitive column does not remove bias, because other columns act as proxies.
+- Always check performance by group, not just overall.
+- Keep people involved in decisions that affect other people, and document limits.', 6, '[{"title":"Search YouTube: AI bias and fairness explained with real examples","url":"https://www.youtube.com/results?search_query=AI%20bias%20and%20fairness%20explained%20with%20real%20examples","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'what-is-ai' and s.order_index = 6),
+  'A hiring model trained on ten years of past hiring decisions keeps favouring candidates similar to the people already employed. What is the most likely reason?', '["It learned the patterns in historical decisions, including their unfairness","Hiring data cannot be used for any analysis","The model is too small to read CVs","The model has a personal opinion about candidates"]'::jsonb, 0, 'Models reproduce the patterns in their training data. If past decisions were biased, the model learns that bias.', 1);
+
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'what-is-ai'), 'The life of an AI project: from problem to production', '## Most of the work is not the model
+
+A typical machine-learning project has stages, and the model itself is a small slice:
+
+1. **Frame the problem.** What decision will this support? Who uses it? What does "good" look like in numbers?
+2. **Check that AI is needed.** A rule, a query or a spreadsheet may do the job more cheaply and reliably.
+3. **Collect and prepare data.** Usually the longest stage: finding it, cleaning it, labelling it, and checking it is fit for the question.
+4. **Build a baseline.** A simple method (an average, a rule of thumb) sets the bar. A fancy model that barely beats the baseline may not be worth its cost.
+5. **Train and evaluate.** Test on data the model has not seen, with a measure that matches the business goal.
+6. **Deploy.** Put it where people can use it, with monitoring, logging and a way to switch it off.
+7. **Monitor and maintain.** Data changes, so performance drifts. Plan to retrain and re-check.
+
+## Training data versus test data
+
+If you test a model on the same data it learned from, it will look better than it is — like marking a student on the exact questions they practised. Always hold back a **test set** that the model never sees during training.
+
+## Choosing a measure
+
+Accuracy alone can mislead. If only 1% of transactions are fraud, a model that always says "not fraud" is 99% accurate and useless. Think about:
+
+- **Precision** — of the cases flagged, how many were right?
+- **Recall** — of the real cases, how many did we catch?
+
+Which matters more depends on the cost of each kind of mistake.
+
+## Where analysts add the most value
+
+Framing the question, understanding the data, choosing the right measure and telling the story honestly — none of which a model does for you.
+
+## Key takeaways
+
+- Most project effort goes into framing, data and monitoring, not model building.
+- Beat a simple baseline before reaching for a complex model.
+- Always evaluate on held-out data, with a measure that matches the real cost of mistakes.
+- Plan for drift: deployed models need monitoring and maintenance.', 7, '[{"title":"Search YouTube: machine learning project lifecycle explained from problem to deployment","url":"https://www.youtube.com/results?search_query=machine%20learning%20project%20lifecycle%20explained%20from%20problem%20to%20deployment","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'what-is-ai' and s.order_index = 7),
+  'Only 1% of transactions are fraudulent. A model that labels every transaction "not fraud" scores 99% accuracy. What does this show?', '["The test set was too large","Accuracy alone can be misleading when classes are very uneven, so recall and precision matter","Fraud does not exist in the data","The model is excellent"]'::jsonb, 1, 'The model catches no fraud at all. Measures such as recall and precision reveal what accuracy hides.', 1);
+
 insert into public.final_quizzes (topic_id, questions)
-values ((select id from public.topics where slug = 'what-is-ai'), '[{"question":"Which choice puts the three terms in the right order, from broadest to most specific?","options":["AI → machine learning → deep learning","Machine learning → AI → deep learning","Deep learning → machine learning → AI","AI → deep learning → machine learning"],"correct_index":0,"explanation":"AI is the broad goal, machine learning is a method inside it, and deep learning is a kind of machine learning."},{"question":"What is the key idea behind machine learning?","options":["A programmer writes every rule by hand","The computer needs no data at all","The computer learns patterns from example data","The computer copies answers from the internet in real time"],"correct_index":2,"explanation":"ML replaces hand-written rules with patterns learned from examples."},{"question":"Which sequence describes the basic learning loop?","options":["Data → prediction → training","Prediction → training → data","Training → prediction → data","Data → training → prediction"],"correct_index":3,"explanation":"You start with data, train a model on it, and then use the model to predict."},{"question":"A churn model was trained only on data from customers aged 20–30. What is the most likely problem?","options":["It will automatically collect more data","It will refuse to make any predictions","It will work perfectly for every age group","It may predict poorly for customers outside that age range"],"correct_index":3,"explanation":"Models learn only what is in their data. Missing groups usually means weaker predictions for those groups."},{"question":"Which of these is narrow AI?","options":["A robot that can do any job after a single demo","A hypothetical machine as flexible as a human in every field","A route planner that estimates your arrival time","A system smarter than all humans combined"],"correct_index":2,"explanation":"Narrow AI does one kind of job. A route planner is a clear everyday example."},{"question":"Which statement about general AI (AGI) is accurate today?","options":["It only exists in Netflix","It is already in every smartphone","It is hypothetical — it has not been built","It is the same as a spam filter"],"correct_index":2,"explanation":"AGI is a hypothetical goal. Every AI product available today is narrow."},{"question":"What is the common thread between Netflix recommendations, Discover Weekly and Google Maps arrival times?","options":["They do not use any data about you","They collect data, find patterns and make predictions","They all rely on hand-written rules only","They are all examples of super AI"],"correct_index":1,"explanation":"All three follow the data → patterns → prediction loop."},{"question":"Which habit leads to better results when chatting with an AI assistant?","options":["Be specific about the audience and format, then refine with follow-ups","Paste confidential data to give it more context","Keep prompts as short and vague as possible","Never read the answer closely"],"correct_index":0,"explanation":"Specific prompts and iteration work best — and confidential data should not go into tools you have not been cleared to use."}]'::jsonb)
+values ((select id from public.topics where slug = 'what-is-ai'), '[{"question":"Which choice puts the three terms in the right order, from broadest to most specific?","options":["AI → machine learning → deep learning","Machine learning → AI → deep learning","Deep learning → machine learning → AI","AI → deep learning → machine learning"],"correct_index":0,"explanation":"AI is the broad goal, machine learning is a method inside it, and deep learning is a kind of machine learning."},{"question":"What is the key idea behind machine learning?","options":["A programmer writes every rule by hand","The computer needs no data at all","The computer learns patterns from example data","The computer copies answers from the internet in real time"],"correct_index":2,"explanation":"ML replaces hand-written rules with patterns learned from examples."},{"question":"Which sequence describes the basic learning loop?","options":["Data → prediction → training","Prediction → training → data","Training → prediction → data","Data → training → prediction"],"correct_index":3,"explanation":"You start with data, train a model on it, and then use the model to predict."},{"question":"A churn model was trained only on data from customers aged 20–30. What is the most likely problem?","options":["It will automatically collect more data","It will refuse to make any predictions","It will work perfectly for every age group","It may predict poorly for customers outside that age range"],"correct_index":3,"explanation":"Models learn only what is in their data. Missing groups usually means weaker predictions for those groups."},{"question":"Which of these is narrow AI?","options":["A robot that can do any job after a single demo","A hypothetical machine as flexible as a human in every field","A route planner that estimates your arrival time","A system smarter than all humans combined"],"correct_index":2,"explanation":"Narrow AI does one kind of job. A route planner is a clear everyday example."},{"question":"Which statement about general AI (AGI) is accurate today?","options":["It only exists in Netflix","It is already in every smartphone","It is hypothetical — it has not been built","It is the same as a spam filter"],"correct_index":2,"explanation":"AGI is a hypothetical goal. Every AI product available today is narrow."},{"question":"What is the common thread between Netflix recommendations, Discover Weekly and Google Maps arrival times?","options":["They do not use any data about you","They collect data, find patterns and make predictions","They all rely on hand-written rules only","They are all examples of super AI"],"correct_index":1,"explanation":"All three follow the data → patterns → prediction loop."},{"question":"Which habit leads to better results when chatting with an AI assistant?","options":["Be specific about the audience and format, then refine with follow-ups","Paste confidential data to give it more context","Keep prompts as short and vague as possible","Never read the answer closely"],"correct_index":0,"explanation":"Specific prompts and iteration work best — and confidential data should not go into tools you have not been cleared to use."},{"question":"Removing the \"gender\" column from training data does not guarantee a fair model. Why?","options":["Gender is never relevant to any pattern","Removing columns makes the model slower","Other columns, such as job title or postcode, can act as proxies for the removed attribute","Models ignore column names"],"correct_index":2,"explanation":"Correlated features can carry the same information, so bias can persist even after a sensitive column is dropped."},{"question":"Why should a model be evaluated on a test set it never saw during training?","options":["Test sets are cheaper to store","It guarantees a perfect score","It makes training faster","Results on the training data overstate how well it will work on new cases"],"correct_index":3,"explanation":"A model can memorise its training examples. Only unseen data shows whether it generalises."}]'::jsonb)
 on conflict (topic_id) do update set questions = excluded.questions;
 
 -- ───────── Topic 2: How AI Models Work ─────────
@@ -388,8 +472,90 @@ insert into public.inline_quizzes (session_id, question, options, correct_index,
 values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'how-ai-models-work' and s.order_index = 5),
   'A model has a 4,000-token context window. What happens when a conversation grows past that?', '["The oldest parts fall out of what the model can see","Nothing — context windows are unlimited","It quietly switches to a bigger model","The model gets smarter as the chat gets longer"]'::jsonb, 0, 'Once the window is full, older text is dropped, so the model can no longer use it.', 1);
 
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'how-ai-models-work'), 'Inside the transformer: attention, in plain English', '## The idea behind modern language models
+
+Most of today''s language models are built on an architecture called the **transformer**. Its key idea is **attention**: when the model processes a word, it can look back at *every other word* in the context and decide how much each one matters.
+
+## Why attention helps
+
+Consider: "The trophy didn''t fit in the suitcase because **it** was too big." What does "it" refer to? To understand the sentence, a model must link "it" to "trophy". Attention lets the model weigh "trophy" heavily when handling "it", wherever it appears in the text.
+
+## The path through the model
+
+1. **Tokens.** Text is split into tokens.
+2. **Embeddings.** Each token becomes a vector of numbers carrying its meaning.
+3. **Layers.** The vectors pass through many stacked layers. In each, attention mixes in information from other positions, and further calculations refine the result.
+4. **Output.** At the end the model produces a probability for every possible next token, and one is chosen.
+5. **Repeat.** The chosen token is added to the text and the process runs again, one token at a time.
+
+## What this explains
+
+- **Why context matters.** The model can only attend to what is in the context window; it has no memory outside it.
+- **Why long inputs cost more.** Attention compares many pairs of tokens, so work grows as the text gets longer.
+- **Why order and wording matter.** Different phrasing gives different token sequences and different attention patterns.
+- **Why it is next-token prediction.** Everything it writes comes from repeating "what comes next?" — which is why it can sound fluent without checking facts.
+
+> **Analyst tip:** you do not need the maths to use this mental model. Attention is "which earlier words should I focus on right now?"
+
+## Key takeaways
+
+- Transformers use attention to weigh how relevant every other token is to the current one.
+- Text becomes tokens, then embeddings, then passes through many layers to predict the next token.
+- Generation repeats one token at a time, which is why fluency does not guarantee truth.
+- Longer contexts cost more because attention compares many pairs of tokens.', 6, '[{"title":"Search YouTube: transformers and attention explained visually for beginners","url":"https://www.youtube.com/results?search_query=transformers%20and%20attention%20explained%20visually%20for%20beginners","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'how-ai-models-work' and s.order_index = 6),
+  'In "The trophy didn''t fit in the suitcase because it was too big", what does attention help the model do?', '["Count the letters in each word","Weigh how relevant other words are, so \"it\" can be linked to \"trophy\"","Translate the sentence into a database query","Remove the punctuation"]'::jsonb, 1, 'Attention lets the model draw on the most relevant earlier words when handling each token.', 1);
+
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'how-ai-models-work'), 'From raw model to assistant: pretraining, fine-tuning and feedback', '## An assistant is built in stages
+
+A chat assistant does not start as a helpful assistant. It is shaped through several stages.
+
+## Stage 1 — Pretraining
+
+The model reads a very large amount of text and learns to **predict the next token**. This is the expensive part. Afterwards it knows a great deal about language, facts and code, but it behaves like a text-completer: ask a question and it may continue with *more questions* rather than an answer.
+
+## Stage 2 — Instruction tuning
+
+The model is trained further on examples of **instructions paired with good responses**. Now it learns the format of being helpful: answer the question, follow the requested style, stay on task.
+
+## Stage 3 — Learning from preferences
+
+People (and sometimes other models) compare pairs of answers and say which is better. The model is then trained to favour responses people prefer — more helpful, more honest, less harmful. A common name for one approach is **reinforcement learning from human feedback (RLHF)**.
+
+## Stage 4 — Safety and policy
+
+Extra training, rules and filters reduce harmful outputs and set the limits on what the assistant will do.
+
+## Why this matters to you
+
+- **Different models behave differently** even if they share a similar base, because their later stages differ.
+- **Fluent is not the same as correct.** Preference training rewards answers people *like*, which can include confident-sounding ones.
+- **Behaviour can change** when a provider updates a model, so important prompts deserve re-testing.
+- **Benchmark scores are only a guide.** A model that tops a public leaderboard may still do worse on your task.
+
+## Fine-tuning in practice
+
+Fine-tuning means training a model further on your own examples. It is good for consistent *style and format*; it is not a reliable way to add new facts — retrieval is usually better for that.
+
+## Key takeaways
+
+- Pretraining teaches language by next-token prediction; later stages teach helpful behaviour.
+- Instruction tuning and preference feedback shape how an assistant responds.
+- Models differ because of their later training, and updates can change behaviour.
+- Test on your own tasks instead of relying only on public benchmarks.', 7, '[{"title":"Search YouTube: how ChatGPT is trained pretraining fine-tuning RLHF explained","url":"https://www.youtube.com/results?search_query=how%20ChatGPT%20is%20trained%20pretraining%20fine-tuning%20RLHF%20explained","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'how-ai-models-work' and s.order_index = 7),
+  'A model that has only been pretrained is asked "What is the capital of France?" and replies with more quiz questions. Why?', '["It has a bug","Pretraining only teaches it to continue text; instruction tuning teaches it to answer helpfully","Capitals cannot be answered by models","It does not know any geography"]'::jsonb, 1, 'A pretrained model completes text patterns. Instruction tuning is what turns it into an assistant that answers.', 1);
+
 insert into public.final_quizzes (topic_id, questions)
-values ((select id from public.topics where slug = 'how-ai-models-work'), '[{"question":"What are a model''s \"weights\"?","options":["The number of words in your prompt","The price you pay per answer","The learned numbers that store what it picked up in training","The physical size of the data centre"],"correct_index":2,"explanation":"Weights (parameters) are the learned numbers inside the model."},{"question":"What is \"inference\"?","options":["Labelling a dataset by hand","Teaching the model with new data","Deleting the model''s weights","Using a trained model to produce an output for a new input"],"correct_index":3,"explanation":"Inference is running the frozen model to get an answer."},{"question":"By default, what happens to the model''s weights when you chat with it?","options":["They are deleted at the end of the chat","They are doubled","They stay the same — chatting does not retrain the model","They are updated after every message"],"correct_index":2,"explanation":"Chatting is inference. The weights are frozen unless the provider trains a new version."},{"question":"What is a token?","options":["A file format","A small chunk of text the model reads as a number","A password for an AI service","A single letter, always"],"correct_index":1,"explanation":"Text is split into tokens — pieces of words, whole words or punctuation."},{"question":"Roughly how many tokens is a 750-word English document?","options":["About 500","About 100","About 7,500","About 1,000"],"correct_index":3,"explanation":"750 words ÷ 0.75 words per token ≈ 1,000 tokens."},{"question":"A temperature near 0 makes answers…","options":["More predictable and repeatable","Always correct","More random and surprising","Longer"],"correct_index":0,"explanation":"Low temperature makes the model pick the most likely tokens, so output is more consistent. It does not guarantee correctness."},{"question":"What does top-p control?","options":["How many tokens you can send","How long the answer is","Which candidate tokens are allowed — only the most likely ones that add up to p","The language of the answer"],"correct_index":2,"explanation":"Top-p limits the shortlist of tokens the model may choose from."},{"question":"Why can a model seem to \"forget\" something you said earlier in a very long chat?","options":["The earlier text may have fallen outside its context window","The weights were deleted","Models can only remember one message","It is bored"],"correct_index":0,"explanation":"When a chat exceeds the context window, older text is no longer visible to the model."}]'::jsonb)
+values ((select id from public.topics where slug = 'how-ai-models-work'), '[{"question":"What are a model''s \"weights\"?","options":["The number of words in your prompt","The price you pay per answer","The learned numbers that store what it picked up in training","The physical size of the data centre"],"correct_index":2,"explanation":"Weights (parameters) are the learned numbers inside the model."},{"question":"What is \"inference\"?","options":["Labelling a dataset by hand","Teaching the model with new data","Deleting the model''s weights","Using a trained model to produce an output for a new input"],"correct_index":3,"explanation":"Inference is running the frozen model to get an answer."},{"question":"By default, what happens to the model''s weights when you chat with it?","options":["They are deleted at the end of the chat","They are doubled","They stay the same — chatting does not retrain the model","They are updated after every message"],"correct_index":2,"explanation":"Chatting is inference. The weights are frozen unless the provider trains a new version."},{"question":"What is a token?","options":["A file format","A small chunk of text the model reads as a number","A password for an AI service","A single letter, always"],"correct_index":1,"explanation":"Text is split into tokens — pieces of words, whole words or punctuation."},{"question":"Roughly how many tokens is a 750-word English document?","options":["About 500","About 100","About 7,500","About 1,000"],"correct_index":3,"explanation":"750 words ÷ 0.75 words per token ≈ 1,000 tokens."},{"question":"A temperature near 0 makes answers…","options":["More predictable and repeatable","Always correct","More random and surprising","Longer"],"correct_index":0,"explanation":"Low temperature makes the model pick the most likely tokens, so output is more consistent. It does not guarantee correctness."},{"question":"What does top-p control?","options":["How many tokens you can send","How long the answer is","Which candidate tokens are allowed — only the most likely ones that add up to p","The language of the answer"],"correct_index":2,"explanation":"Top-p limits the shortlist of tokens the model may choose from."},{"question":"Why can a model seem to \"forget\" something you said earlier in a very long chat?","options":["The earlier text may have fallen outside its context window","The weights were deleted","Models can only remember one message","It is bored"],"correct_index":0,"explanation":"When a chat exceeds the context window, older text is no longer visible to the model."},{"question":"Why does a very long prompt usually cost more and respond more slowly?","options":["Models are slower in the evening","The model reads long text twice on purpose","Long prompts are encrypted","Attention compares many pairs of tokens, and more tokens means more work"],"correct_index":3,"explanation":"The amount of computation grows with the number of tokens the model must attend to."},{"question":"Which statement best describes the purpose of instruction tuning?","options":["It teaches the model new facts about your company","It deletes the training data","It trains the model on instruction–response examples so it follows requests helpfully","It shrinks the model to fit on a phone"],"correct_index":2,"explanation":"Instruction tuning turns a text-completing model into one that responds to instructions in a useful format."}]'::jsonb)
 on conflict (topic_id) do update set questions = excluded.questions;
 
 -- ───────── Topic 3: AI Tools Landscape ─────────
@@ -602,8 +768,96 @@ insert into public.inline_quizzes (session_id, question, options, correct_index,
 values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'ai-tools-landscape' and s.order_index = 5),
   'You need to turn a long interview recording into notes with action items. Which workflow fits best?', '["Image generator, then video generator","Transcription, then a chat assistant to summarise and list actions","A code editor","A text-to-speech voice"]'::jsonb, 1, 'Transcribe the audio first, then ask a chat assistant to summarise and pull out actions — and skim the result.', 1);
 
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'ai-tools-landscape'), 'Open-weight versus closed models, and running AI locally', '## Two broad kinds of model
+
+- **Closed (proprietary) models** are used through a provider''s app or API. You cannot download the model; you send requests and receive replies.
+- **Open-weight models** have their trained weights published, so you can download and run them yourself, subject to a licence. (This is often loosely called "open source", but the licence terms vary — read them.)
+
+## Trade-offs
+
+| | Closed, via API | Open-weight, self-hosted |
+| --- | --- | --- |
+| **Quality at the frontier** | Often the strongest | Strong and improving; usually a step behind the very best |
+| **Setup effort** | Minutes | Hardware, hosting, updates, monitoring |
+| **Data control** | Data goes to the provider (check terms) | Data can stay on your own machines |
+| **Cost shape** | Pay per use | Pay for hardware or hosting, whether used or not |
+| **Customisation** | Limited | Full: fine-tune, change behaviour |
+| **Risk** | Provider changes pricing or models | You own security, patching and quality |
+
+## Running a model on your own computer
+
+Tools exist that let you download a smaller open-weight model and chat with it locally. Models are shrunk with **quantisation** — storing numbers at lower precision — so they fit in less memory, at some cost in quality. Rough rules:
+
+- Bigger models need more memory (RAM or GPU memory).
+- A laptop can run small and medium models; the largest need serious hardware.
+- Local does not automatically mean *better* — it means *you* are responsible for it.
+
+## How to choose
+
+1. **Is the data sensitive?** If it must not leave your network, self-hosting or an enterprise agreement becomes attractive.
+2. **How much usage?** Steady heavy usage can favour self-hosting; occasional use favours pay-per-use.
+3. **Do you have the skills** to run and secure infrastructure?
+4. **Test on your own tasks** before deciding — benchmarks do not know your work.
+
+## Key takeaways
+
+- Closed models are easy and strong; open-weight models give control and data locality.
+- Licences for "open" models differ, so read them.
+- Quantisation shrinks models to fit smaller hardware at some quality cost.
+- Choose by data sensitivity, usage pattern, skills and real-task tests.', 6, '[{"title":"Search YouTube: open source vs closed source LLM run models locally tutorial","url":"https://www.youtube.com/results?search_query=open%20source%20vs%20closed%20source%20LLM%20run%20models%20locally%20tutorial","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'ai-tools-landscape' and s.order_index = 6),
+  'A team must keep sensitive documents inside its own network and has the engineering skills to run servers. Which option is worth considering?', '["Only free consumer chat apps","A self-hosted open-weight model, or an enterprise agreement with strong data terms","Posting documents publicly to get help","No AI of any kind, ever"]'::jsonb, 1, 'When data must stay in-house, self-hosting or contractual protections are the usual routes. The right choice depends on skills and requirements.', 1);
+
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'ai-tools-landscape'), 'Choosing AI tools for a team: a practical scorecard', '## Don''t pick by hype
+
+New AI tools launch every week. A short, repeatable scorecard keeps your team from choosing on buzz — or from re-opening the debate every month.
+
+## A scorecard you can reuse
+
+Score each candidate (for example 1–5) on:
+
+1. **Quality on your tasks.** Test with 10–20 real examples, not the vendor''s demo.
+2. **Data handling.** Where is data stored, for how long, is it used for training, and what do the business terms say?
+3. **Security and admin controls.** Single sign-on, user management, audit logs, permission controls.
+4. **Integration.** Does it connect to the tools you already use (drive, chat, ticketing, warehouse)?
+5. **Cost at your scale.** Per-seat versus per-use, plus the time you spend maintaining it.
+6. **Reliability and support.** Uptime history, rate limits, response when things break.
+7. **Lock-in.** How hard is it to leave? Can you export your prompts, data and history?
+
+## Run a fair trial
+
+- Give each candidate the **same tasks** and the same instructions.
+- Score outputs against a **rubric**, ideally with people who didn''t pick a favourite.
+- Record **time saved** and **errors found**, not just impressions.
+- Include at least one **failure case** — how does the tool behave when it does not know?
+
+## Plan for change
+
+Models and prices change quickly. Avoid building everything around one vendor''s quirks; keep prompts and test cases in your own files so you can re-test another tool in an afternoon.
+
+## Don''t forget the people
+
+The best tool is the one your colleagues will actually use safely. Training, shared prompt libraries and clear rules about what may be pasted matter as much as the tool itself.
+
+## Key takeaways
+
+- Use a scorecard: quality, data handling, security, integration, cost, reliability, lock-in.
+- Trial each tool on the same real tasks and score with a rubric.
+- Keep prompts and tests portable so switching tools is cheap.
+- Adoption depends on training and clear rules, not only on features.', 7, '[{"title":"Search YouTube: how to evaluate and choose AI tools for your company scorecard","url":"https://www.youtube.com/results?search_query=how%20to%20evaluate%20and%20choose%20AI%20tools%20for%20your%20company%20scorecard","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'ai-tools-landscape' and s.order_index = 7),
+  'What is the fairest way to compare two AI tools for your team?', '["Give both the same real tasks and score the outputs against a shared rubric","Choose whichever has the longest feature list","Pick the cheapest without testing","Watch each vendor''s demo and pick the one you liked best"]'::jsonb, 0, 'Identical tasks and a common rubric turn opinions into comparable evidence about your own work.', 1);
+
 insert into public.final_quizzes (topic_id, questions)
-values ((select id from public.topics where slug = 'ai-tools-landscape'), '[{"question":"Which of these is an AI chat assistant built into Microsoft 365?","options":["Cursor","Stable Diffusion","Microsoft Copilot","Midjourney"],"correct_index":2,"explanation":"Microsoft Copilot is the assistant integrated into Microsoft 365 apps."},{"question":"What is the best way to compare two AI assistants for your work?","options":["Read only the marketing pages","Compare their logos","Pick whichever is more expensive","Run the same real task in both and judge the results"],"correct_index":3,"explanation":"Testing on your own tasks is the most reliable way to compare."},{"question":"How do most modern image generators create a picture?","options":["By searching the web and copying a photo","By drawing every pixel by hand","By starting with noise and removing it step by step, guided by the prompt","By asking a designer"],"correct_index":2,"explanation":"Diffusion models gradually remove noise, guided by your text prompt."},{"question":"Which statement best matches Stable Diffusion?","options":["It is a family of open-weights models you can run and customise yourself","It only works inside Gmail","It is a spreadsheet function","It is a video-call app"],"correct_index":0,"explanation":"Stable Diffusion models are open-weights, giving users more control and customisation."},{"question":"Which description fits Claude Code?","options":["A spreadsheet add-in that cannot touch files","A tool that only generates pictures","An agentic coding tool in the terminal that can read a project and propose edits","A voice cloning service"],"correct_index":2,"explanation":"Claude Code is a terminal-based agentic coding tool that works with your project and asks permission for actions."},{"question":"Which practice is safest when using a coding assistant?","options":["Run all generated code on production immediately","Never read the code","Paste your database password into the prompt so it has full context","Review and test generated code, and keep secrets out of prompts"],"correct_index":3,"explanation":"Review and test everything, and never share secrets in prompts."},{"question":"Which is the most responsible way to use voice and video AI?","options":["Assume a realistic recording must be real","Clone anyone''s voice without asking","Get consent and tell people when media is synthetic","Hide that the media is AI-made"],"correct_index":2,"explanation":"Consent and transparency are essential, and realistic media is no longer automatic proof."},{"question":"What should come first when choosing an AI tool?","options":["Watching every tutorial","Defining the job you need done","Buying the most expensive plan","Whichever tool is trending this week"],"correct_index":1,"explanation":"Start with the job — the output you need, how sensitive the data is and how accurate it must be."}]'::jsonb)
+values ((select id from public.topics where slug = 'ai-tools-landscape'), '[{"question":"Which of these is an AI chat assistant built into Microsoft 365?","options":["Cursor","Stable Diffusion","Microsoft Copilot","Midjourney"],"correct_index":2,"explanation":"Microsoft Copilot is the assistant integrated into Microsoft 365 apps."},{"question":"What is the best way to compare two AI assistants for your work?","options":["Read only the marketing pages","Compare their logos","Pick whichever is more expensive","Run the same real task in both and judge the results"],"correct_index":3,"explanation":"Testing on your own tasks is the most reliable way to compare."},{"question":"How do most modern image generators create a picture?","options":["By searching the web and copying a photo","By drawing every pixel by hand","By starting with noise and removing it step by step, guided by the prompt","By asking a designer"],"correct_index":2,"explanation":"Diffusion models gradually remove noise, guided by your text prompt."},{"question":"Which statement best matches Stable Diffusion?","options":["It is a family of open-weights models you can run and customise yourself","It only works inside Gmail","It is a spreadsheet function","It is a video-call app"],"correct_index":0,"explanation":"Stable Diffusion models are open-weights, giving users more control and customisation."},{"question":"Which description fits Claude Code?","options":["A spreadsheet add-in that cannot touch files","A tool that only generates pictures","An agentic coding tool in the terminal that can read a project and propose edits","A voice cloning service"],"correct_index":2,"explanation":"Claude Code is a terminal-based agentic coding tool that works with your project and asks permission for actions."},{"question":"Which practice is safest when using a coding assistant?","options":["Run all generated code on production immediately","Never read the code","Paste your database password into the prompt so it has full context","Review and test generated code, and keep secrets out of prompts"],"correct_index":3,"explanation":"Review and test everything, and never share secrets in prompts."},{"question":"Which is the most responsible way to use voice and video AI?","options":["Assume a realistic recording must be real","Clone anyone''s voice without asking","Get consent and tell people when media is synthetic","Hide that the media is AI-made"],"correct_index":2,"explanation":"Consent and transparency are essential, and realistic media is no longer automatic proof."},{"question":"What should come first when choosing an AI tool?","options":["Watching every tutorial","Defining the job you need done","Buying the most expensive plan","Whichever tool is trending this week"],"correct_index":1,"explanation":"Start with the job — the output you need, how sensitive the data is and how accurate it must be."},{"question":"What does quantisation do to a model?","options":["It stores the model''s numbers at lower precision so it needs less memory, at some cost in quality","It adds extra training data","It translates the model into another language","It encrypts the model''s answers"],"correct_index":0,"explanation":"Lower-precision weights shrink memory use, which lets larger models run on smaller hardware, usually with a small quality loss."},{"question":"Which factor is a genuine downside of self-hosting an open-weight model?","options":["It can only run once per day","You are not allowed to test it","You become responsible for hardware, security, updates and quality","Your data can never stay private"],"correct_index":2,"explanation":"Self-hosting gives control, but the operational burden moves to your team."}]'::jsonb)
 on conflict (topic_id) do update set questions = excluded.questions;
 
 -- ───────── Topic 4: Prompt Engineering ─────────
@@ -825,8 +1079,101 @@ insert into public.inline_quizzes (session_id, question, options, correct_index,
 values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'prompt-engineering' and s.order_index = 5),
   'Which rewrite fixes the instruction "Don''t be wordy"?', '["\"Be as long as you like.\"","\"Keep the answer under 100 words.\"","\"Say less, or maybe more.\"","\"Don''t be too wordy, please.\""]'::jsonb, 1, 'A concrete, positive instruction ("under 100 words") is clearer than a vague negative one.', 1);
 
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'prompt-engineering'), 'Structured outputs: JSON, schemas and reliable formats', '## When a person reads the answer, prose is fine. When a program does, it is not
+
+If you want to feed a model''s answer into a spreadsheet, a database or another script, "a nice paragraph" is useless. You need output in a **predictable format** — most often **JSON**.
+
+## Ask precisely
+
+Describe the exact shape you want, and give an example:
+
+> Extract the details from the email below. Reply with **only** valid JSON in this shape, with no extra text:
+> `{"customer": string, "order_id": string, "issue": "late" | "damaged" | "wrong_item" | "other", "urgent": boolean}`
+> If a field is not in the email, use `null`.
+
+Notice four habits: *only JSON*, an *exact schema*, a *fixed list of allowed values* for categories, and a rule for *missing data*.
+
+## Make it easier for the model
+
+- Use **delimiters** to separate instructions from the material, for example the email between lines of `---`.
+- Show **one or two examples** (few-shot) of input and the exact output you want.
+- Keep categories **few and clearly defined**.
+- Many APIs offer a **structured output** or **JSON mode** that constrains the format — use it when available instead of relying on wording alone.
+
+## Never trust the format blindly
+
+Even good prompts occasionally produce broken JSON or a value outside your list. In code:
+
+1. **Parse** the output and catch errors.
+2. **Validate** against the schema (required fields, types, allowed values).
+3. If invalid, **retry once**, sending back the error message ("field ''issue'' must be one of …").
+4. If it still fails, **log it and hand the case to a person**.
+
+## Don''t ask for more than you need
+
+Every extra field is another chance for a mistake. Request only what the next step uses.
+
+> **Analyst tip:** structured extraction is one of the highest-value uses of AI for analysts — turning messy comments, emails and notes into clean columns you can count.
+
+## Key takeaways
+
+- When software consumes the answer, specify an exact format such as a JSON schema.
+- Limit categories to a fixed list and say what to do when data is missing.
+- Use delimiters, examples and any built-in structured-output feature.
+- Always parse and validate; retry once, then escalate to a person.', 6, '[{"title":"Search YouTube: LLM structured output JSON schema prompting extract data from text tutorial","url":"https://www.youtube.com/results?search_query=LLM%20structured%20output%20JSON%20schema%20prompting%20extract%20data%20from%20text%20tutorial","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'prompt-engineering' and s.order_index = 6),
+  'A script reads the model''s reply and crashes about once in fifty runs because the JSON is malformed. What is the best fix?', '["Remove the script","Parse and validate the output in code, retry once with the error message, and escalate failures","Switch to a prompt that asks the model to be more careful","Hope it improves"]'::jsonb, 1, 'Prompts reduce errors but cannot eliminate them. Validation and a bounded retry make the pipeline robust.', 1);
+
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'prompt-engineering'), 'Prompt chaining, self-checks and testing your prompts', '## Break big jobs into small steps
+
+One giant prompt that says "read these 40 comments, find themes, rank them, write a summary and draft an email" often does everything badly. **Prompt chaining** splits the job into steps, where each step''s output feeds the next:
+
+1. **Clean** — remove duplicates and obvious noise.
+2. **Label** — tag each comment with a topic from a fixed list.
+3. **Count** — tally the labels (with code, not by the model).
+4. **Summarise** — write the narrative from the counts and a few representative quotes.
+5. **Draft** — turn the summary into an email.
+
+Each step is simpler, easier to check, and you can fix one stage without redoing the rest.
+
+## Add a checking step
+
+Models are often better at **reviewing** an answer than producing a perfect one first time. Add a second pass:
+
+> Here is a draft summary and the source comments. List any claim in the summary that is not supported by the comments. Then give a corrected version.
+
+Useful self-checks: "Which assumptions did you make?", "What would change your answer?", "Does every number come from the data provided?"
+
+A caution: asking a model "are you sure?" does not guarantee correctness. Checks work best when they point at something concrete — a source text, a rule, a schema.
+
+## Treat prompts like code
+
+Prompts are part of how your product behaves, so manage them:
+
+- **Version them** in a file, with a note on why each change was made.
+- **Keep a test set** of inputs with expected outputs (see the evaluation topic) and rerun it after every edit.
+- **Change one thing at a time** so you know what helped.
+- **Record the model name and settings** used, because a model update can change results.
+
+## Key takeaways
+
+- Chain small steps instead of one giant prompt; use code for counting and sorting.
+- Add a review step that checks claims against the source.
+- "Are you sure?" is weak; concrete checks against sources and rules are strong.
+- Version prompts, keep a test set, and change one variable at a time.', 7, '[{"title":"Search YouTube: prompt chaining and self-critique techniques for LLM workflows","url":"https://www.youtube.com/results?search_query=prompt%20chaining%20and%20self-critique%20techniques%20for%20LLM%20workflows","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'prompt-engineering' and s.order_index = 7),
+  'You need counts of how many comments fall into each theme. Which approach is most reliable?', '["Ask the model to guess and round to the nearest ten","Have the model label each comment, then count the labels with code","Skip counting","Ask the model to estimate the counts in its reply"]'::jsonb, 1, 'Labelling is a good job for a model; exact counting is better done by code, which is deterministic.', 1);
+
 insert into public.final_quizzes (topic_id, questions)
-values ((select id from public.topics where slug = 'prompt-engineering'), '[{"question":"What is a prompt?","options":["A type of password","Only the first sentence you type","All the input the model is given, including any context and instructions","The model''s reply"],"correct_index":2,"explanation":"A prompt is everything handed to the model: your text, documents, earlier chat and instructions."},{"question":"Which four parts make up the prompt recipe from this topic?","options":["Greeting, joke, task, sign-off","Data, model, training, inference","Token, weight, window, temperature","Context, task, format, constraints"],"correct_index":3,"explanation":"The recipe is Context, Task, Format and Constraints."},{"question":"What is the difference between zero-shot and few-shot prompting?","options":["Zero-shot uses no examples; few-shot includes a few examples","Zero-shot is faster to read","Few-shot never uses instructions","There is no difference"],"correct_index":0,"explanation":"Zero-shot gives only instructions. Few-shot adds a small number of worked examples."},{"question":"Which task benefits most from few-shot examples?","options":["Tagging comments with your team''s exact labels and edge-case rules","Saying hello","Asking for the current time","Translating a single word"],"correct_index":0,"explanation":"Few-shot examples are ideal for consistent labelling and house style."},{"question":"What does chain-of-thought prompting ask the model to do?","options":["Repeat the question back","Use a higher temperature","Answer instantly with no explanation","Reason through the problem in steps before giving the answer"],"correct_index":3,"explanation":"Chain-of-thought prompts ask for step-by-step reasoning before the final answer."},{"question":"A model shows neat step-by-step working for a calculation. What should you do?","options":["Trust it because it showed its work","Ask for a longer explanation only","Check at least some of the arithmetic yourself","Delete the answer"],"correct_index":2,"explanation":"Written reasoning can look convincing and still be wrong, so verify important numbers."},{"question":"What is the main effect of giving the model a role such as \"senior data analyst\"?","options":["It removes the need for a task","It increases the context window","It guarantees correct answers","It shapes tone, depth and perspective"],"correct_index":3,"explanation":"Roles influence how the answer is framed. They do not add knowledge or guarantee accuracy."},{"question":"Which prompt is better for getting a short answer?","options":["\"Don''t write too much.\"","\"Answer in under 80 words.\"","\"Be brief but cover absolutely everything.\"","\"Short, long, either is fine.\""],"correct_index":1,"explanation":"A specific limit is clear and measurable; the others are vague or contradictory."},{"question":"You need a summary that uses only facts from a report. What is the safest approach?","options":["Use a very high temperature","Paste the report and tell the model to use only that text, flagging missing information","Ask from memory and hope it knows the report","Ask it to guess the missing numbers"],"correct_index":1,"explanation":"Supply the source text and instruct the model to rely on it alone, so it does not invent details."},{"question":"The model''s first answer is close but too technical. What is the best follow-up?","options":["Ask the same question again word for word","Start again with a completely different prompt","Reply: \"Rewrite for a non-technical manager, in plain language, keep the numbers.\"","Give up on AI"],"correct_index":2,"explanation":"Name exactly what is off and ask for that change — iteration beats starting from scratch."}]'::jsonb)
+values ((select id from public.topics where slug = 'prompt-engineering'), '[{"question":"What is a prompt?","options":["A type of password","Only the first sentence you type","All the input the model is given, including any context and instructions","The model''s reply"],"correct_index":2,"explanation":"A prompt is everything handed to the model: your text, documents, earlier chat and instructions."},{"question":"Which four parts make up the prompt recipe from this topic?","options":["Greeting, joke, task, sign-off","Data, model, training, inference","Token, weight, window, temperature","Context, task, format, constraints"],"correct_index":3,"explanation":"The recipe is Context, Task, Format and Constraints."},{"question":"What is the difference between zero-shot and few-shot prompting?","options":["Zero-shot uses no examples; few-shot includes a few examples","Zero-shot is faster to read","Few-shot never uses instructions","There is no difference"],"correct_index":0,"explanation":"Zero-shot gives only instructions. Few-shot adds a small number of worked examples."},{"question":"Which task benefits most from few-shot examples?","options":["Tagging comments with your team''s exact labels and edge-case rules","Saying hello","Asking for the current time","Translating a single word"],"correct_index":0,"explanation":"Few-shot examples are ideal for consistent labelling and house style."},{"question":"What does chain-of-thought prompting ask the model to do?","options":["Repeat the question back","Use a higher temperature","Answer instantly with no explanation","Reason through the problem in steps before giving the answer"],"correct_index":3,"explanation":"Chain-of-thought prompts ask for step-by-step reasoning before the final answer."},{"question":"A model shows neat step-by-step working for a calculation. What should you do?","options":["Trust it because it showed its work","Ask for a longer explanation only","Check at least some of the arithmetic yourself","Delete the answer"],"correct_index":2,"explanation":"Written reasoning can look convincing and still be wrong, so verify important numbers."},{"question":"What is the main effect of giving the model a role such as \"senior data analyst\"?","options":["It removes the need for a task","It increases the context window","It guarantees correct answers","It shapes tone, depth and perspective"],"correct_index":3,"explanation":"Roles influence how the answer is framed. They do not add knowledge or guarantee accuracy."},{"question":"Which prompt is better for getting a short answer?","options":["\"Don''t write too much.\"","\"Answer in under 80 words.\"","\"Be brief but cover absolutely everything.\"","\"Short, long, either is fine.\""],"correct_index":1,"explanation":"A specific limit is clear and measurable; the others are vague or contradictory."},{"question":"You need a summary that uses only facts from a report. What is the safest approach?","options":["Use a very high temperature","Paste the report and tell the model to use only that text, flagging missing information","Ask from memory and hope it knows the report","Ask it to guess the missing numbers"],"correct_index":1,"explanation":"Supply the source text and instruct the model to rely on it alone, so it does not invent details."},{"question":"The model''s first answer is close but too technical. What is the best follow-up?","options":["Ask the same question again word for word","Start again with a completely different prompt","Reply: \"Rewrite for a non-technical manager, in plain language, keep the numbers.\"","Give up on AI"],"correct_index":2,"explanation":"Name exactly what is off and ask for that change — iteration beats starting from scratch."},{"question":"Which instruction best helps a model return output that a script can parse?","options":["\"Reply with only valid JSON matching this schema, using null for missing fields.\"","\"Surprise me.\"","\"Reply in a friendly tone.\"","\"Be as detailed as possible.\""],"correct_index":0,"explanation":"Specifying only JSON, an exact schema and a rule for missing data gives predictable, machine-readable output."},{"question":"Why is prompt chaining often better than one very long prompt for a multi-step task?","options":["It makes the model more expensive on purpose","It always uses fewer tokens","Each step is simpler and easier to check, and you can fix one stage without redoing everything","It removes the need for any instructions"],"correct_index":2,"explanation":"Smaller steps are easier to test and debug, and intermediate results can be verified."}]'::jsonb)
 on conflict (topic_id) do update set questions = excluded.questions;
 
 -- ───────── Topic 5: API Keys & Integrations ─────────
@@ -1077,8 +1424,100 @@ insert into public.inline_quizzes (session_id, question, options, correct_index,
 values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'api-keys-and-integrations' and s.order_index = 5),
   'You accidentally pushed a file containing your API key to a public repository. What is the first thing to do?', '["Delete the file and hope nobody saw it","Ask a friend to keep the secret","Rename the repository","Revoke the key in the provider console and create a new one"]'::jsonb, 3, 'Revoke first — the key may already have been copied. Cleaning up the repository comes afterwards.', 1);
 
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'api-keys-and-integrations'), 'Errors, retries and streaming in API calls', '## Calls fail — plan for it
+
+Every API call can go wrong: the network drops, the provider is busy, or your request is faulty. A reliable integration reads the **status code** and reacts sensibly.
+
+## Reading status codes
+
+| Code | Meaning | What to do |
+| --- | --- | --- |
+| **200** | Success | Use the result |
+| **400** | Your request is malformed | Fix the request; do not retry unchanged |
+| **401 / 403** | Bad key or no permission | Check the key and its access; do not retry |
+| **429** | Too many requests (rate limit) | Wait, then retry slower |
+| **500 / 502 / 503** | Provider-side problem | Retry after a delay |
+
+Rule of thumb: **client errors (4xx, except 429) mean you must change something; server errors (5xx) and 429 are worth retrying.**
+
+## Retrying politely
+
+Use **exponential backoff**: wait 1 second, then 2, then 4, then 8, up to a limit. Add a little random **jitter** so many clients don''t retry in lockstep. If the response includes a "retry after" hint, follow it. Give up after a few attempts and tell the user.
+
+## Timeouts
+
+Always set a **timeout** so a stuck call cannot freeze your program. Choose it from reality: a long generation legitimately takes longer than a simple lookup.
+
+## Be careful retrying actions
+
+Retrying a *read* is harmless. Retrying something with side effects — sending an email, creating an order — could do it twice. Use an **idempotency key** if the API supports one, or check whether the action already happened.
+
+## Streaming
+
+With **streaming**, the API sends the answer in pieces as it is generated, so your interface can show words as they arrive instead of waiting for the full reply. It feels faster and lets users stop early. Your code must handle partial text, an interrupted stream, and the final "done" event.
+
+## Key takeaways
+
+- Read status codes: fix 4xx errors, retry 429 and 5xx with backoff.
+- Use exponential backoff with jitter, plus a maximum number of attempts.
+- Set timeouts, and be careful retrying actions that have side effects.
+- Streaming shows output as it is produced; handle interruptions gracefully.', 6, '[{"title":"Search YouTube: API error handling retries exponential backoff rate limit 429 explained","url":"https://www.youtube.com/results?search_query=API%20error%20handling%20retries%20exponential%20backoff%20rate%20limit%20429%20explained","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'api-keys-and-integrations' and s.order_index = 6),
+  'An API call returns 400 because a required field is missing. What should your code do?', '["Wait an hour and retry","Retry the identical request 10 times","Switch to a different API key","Fix the request; retrying the same request will fail the same way"]'::jsonb, 3, 'A 400 means the request itself is wrong. Only a corrected request will succeed.', 1);
+
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'api-keys-and-integrations'), 'Designing a safe AI backend: keys, limits and logs', '## The golden rule: keys live on the server
+
+If your web page or mobile app calls an AI provider **directly**, the API key must be inside the page — and anyone can open the browser''s developer tools and copy it. Then they can spend your money.
+
+The safe pattern:
+
+1. The **browser** talks to **your own backend**.
+2. Your **backend** holds the key (in an environment variable or secret manager) and calls the provider.
+3. The backend decides **who may do what** before forwarding anything.
+
+## Protect your budget
+
+Your backend is where you add controls the provider cannot know about:
+
+- **Authentication** — only signed-in users can use the feature.
+- **Per-user limits** — for example, 30 requests per hour, so one person (or a script) cannot drain the budget.
+- **Input size limits** — cap prompt length.
+- **Output limits** — cap the response tokens.
+- **Spending alerts and hard caps** with the provider, plus separate keys for development and production.
+
+## Logging without leaking
+
+Log enough to debug and measure: time, user id, model, token counts, status, latency. **Do not log** API keys, passwords, or full personal content unless you truly need it and have a retention plan. Redact sensitive fields.
+
+## Rotate and revoke
+
+- Give each environment and service **its own key** so one leak is contained.
+- **Rotate** keys on a schedule and immediately if anything looks suspicious.
+- Know how to **revoke a key quickly** — and practise it before you need it.
+
+## Handle untrusted input
+
+Anything a user types may try to manipulate the model. Keep system instructions on the server, never trust user text as instructions, and validate model output before using it in a database command, a web page or a shell.
+
+## Key takeaways
+
+- Never put API keys in front-end code; call the provider from your own backend.
+- Add authentication, per-user rate limits and size limits to protect cost and abuse.
+- Log operational data, not secrets; redact personal content.
+- Use separate keys per environment, rotate regularly, and be ready to revoke fast.', 7, '[{"title":"Search YouTube: protect API keys backend proxy rate limiting per user AI app security","url":"https://www.youtube.com/results?search_query=protect%20API%20keys%20backend%20proxy%20rate%20limiting%20per%20user%20AI%20app%20security","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'api-keys-and-integrations' and s.order_index = 7),
+  'Your web app calls an AI provider straight from the browser with the key in the page source. What is the main risk?', '["The provider will refuse all requests","Nothing — browsers hide keys automatically","Anyone can copy the key from the browser and use it at your expense","Pages will load more slowly"]'::jsonb, 2, 'Anything sent to the browser can be read by the user. Keys must stay on a server you control.', 1);
+
 insert into public.final_quizzes (topic_id, questions)
-values ((select id from public.topics where slug = 'api-keys-and-integrations'), '[{"question":"What does an API let software do?","options":["Print documents","Change a model''s weights","Make the model forget everything","Use a service such as an AI model without a chat window"],"correct_index":3,"explanation":"An API lets programs send requests to a service and receive responses."},{"question":"Which best describes an API key?","options":["A free pass with no cost","A secret string that identifies, authorises and bills the caller","A public nickname for the model","A type of prompt"],"correct_index":1,"explanation":"The key identifies who is calling, authorises the request and links usage to billing."},{"question":"Is a chat subscription the same as API access?","options":["Yes, they always share one bill","No — they are usually separate products with separate billing","Only if you use the same email address","Yes, but only on weekends"],"correct_index":1,"explanation":"Chat plans and API usage are normally billed separately."},{"question":"When you create an API key in a provider console, what should you do right away?","options":["Ignore it — you can always view it again","Email it to your whole team","Copy it and store it somewhere safe, because it may be shown only once","Post it on social media"],"correct_index":2,"explanation":"Keys are typically shown once at creation, so copy them to a password manager or .env file immediately."},{"question":"A request to an AI API returns status 429. What does it mean?","options":["The model is offline forever","The key is perfect","The answer was blank","You are sending too many requests too quickly"],"correct_index":3,"explanation":"429 means you hit a rate limit. Slow down and retry with backoff."},{"question":"Which two things determine the cost of most AI API calls?","options":["The number of emojis","The length of your API key","Input tokens and output tokens, at the chosen model''s prices","Colour of the prompt and time of day"],"correct_index":2,"explanation":"You pay for tokens sent and tokens generated, priced per model."},{"question":"Where should an API key be stored in a project?","options":["Hard-coded in the source file","In a public chat channel","In the README","In a .env file that is listed in .gitignore, or in a secret manager"],"correct_index":3,"explanation":"Keep keys out of code: use an ignored .env file or a secret manager."},{"question":"Your key appears in a public repository. What is the correct order of actions?","options":["Rename the key","Do nothing — nobody reads repositories","Revoke the key, create a new one, check usage, then clean the history","Delete the file, then wait"],"correct_index":2,"explanation":"Revoke first because the key may already be copied, then replace it and check for misuse."}]'::jsonb)
+values ((select id from public.topics where slug = 'api-keys-and-integrations'), '[{"question":"What does an API let software do?","options":["Print documents","Change a model''s weights","Make the model forget everything","Use a service such as an AI model without a chat window"],"correct_index":3,"explanation":"An API lets programs send requests to a service and receive responses."},{"question":"Which best describes an API key?","options":["A free pass with no cost","A secret string that identifies, authorises and bills the caller","A public nickname for the model","A type of prompt"],"correct_index":1,"explanation":"The key identifies who is calling, authorises the request and links usage to billing."},{"question":"Is a chat subscription the same as API access?","options":["Yes, they always share one bill","No — they are usually separate products with separate billing","Only if you use the same email address","Yes, but only on weekends"],"correct_index":1,"explanation":"Chat plans and API usage are normally billed separately."},{"question":"When you create an API key in a provider console, what should you do right away?","options":["Ignore it — you can always view it again","Email it to your whole team","Copy it and store it somewhere safe, because it may be shown only once","Post it on social media"],"correct_index":2,"explanation":"Keys are typically shown once at creation, so copy them to a password manager or .env file immediately."},{"question":"A request to an AI API returns status 429. What does it mean?","options":["The model is offline forever","The key is perfect","The answer was blank","You are sending too many requests too quickly"],"correct_index":3,"explanation":"429 means you hit a rate limit. Slow down and retry with backoff."},{"question":"Which two things determine the cost of most AI API calls?","options":["The number of emojis","The length of your API key","Input tokens and output tokens, at the chosen model''s prices","Colour of the prompt and time of day"],"correct_index":2,"explanation":"You pay for tokens sent and tokens generated, priced per model."},{"question":"Where should an API key be stored in a project?","options":["Hard-coded in the source file","In a public chat channel","In the README","In a .env file that is listed in .gitignore, or in a secret manager"],"correct_index":3,"explanation":"Keep keys out of code: use an ignored .env file or a secret manager."},{"question":"Your key appears in a public repository. What is the correct order of actions?","options":["Rename the key","Do nothing — nobody reads repositories","Revoke the key, create a new one, check usage, then clean the history","Delete the file, then wait"],"correct_index":2,"explanation":"Revoke first because the key may already be copied, then replace it and check for misuse."},{"question":"Which responses are generally worth retrying with a growing delay?","options":["400 and 401","Every error, immediately and forever","404 for a mistyped URL","429 and 5xx server errors"],"correct_index":3,"explanation":"Rate limits and temporary provider problems often clear on their own. Client errors need a fix, not a retry."},{"question":"Why add random jitter to retry delays?","options":["Jitter is only for audio","So many clients that failed together do not all retry at the same instant","To make requests slower for fun","To hide the API key"],"correct_index":1,"explanation":"Randomising delays spreads retries out and avoids a synchronised surge that overloads the service again."}]'::jsonb)
 on conflict (topic_id) do update set questions = excluded.questions;
 
 -- ───────── Topic 6: Working with Claude ─────────
@@ -1422,8 +1861,87 @@ insert into public.inline_quizzes (session_id, question, options, correct_index,
 values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'working-with-claude' and s.order_index = 6),
   'In the mini-project, you ask a question that none of your files cover. What should the assistant do?', '["Answer from memory without saying so","Ignore the question","Say \"Not in the sources\" and suggest what to read next","Invent a plausible answer"]'::jsonb, 2, 'The guardrail tells it to rely only on the sources and admit gaps — that is what you are testing.', 1);
 
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'working-with-claude'), 'Working with long documents: quote first, then answer', '## Long inputs are where models slip
+
+Claude can read very long documents, but accuracy depends on how you ask. With a long report, contract or transcript, the risks are **missing a detail**, **blending two sections**, or **stating something the text never said**.
+
+## Techniques that help
+
+1. **Put the document first and the question last.** Place the material at the top of the message, then your instructions and question below it.
+2. **Label the material** so it can be referenced: wrap documents in tags or clear headings, such as a title and an id for each one.
+3. **Ask for quotes before conclusions.** For example: "First extract the exact sentences that are relevant to the question, in quotation marks. Then answer using only those quotes." This anchors the answer to real text.
+4. **Ask for a citation per claim**, such as the section or document name.
+5. **Allow "not found".** Tell Claude to say so if the document does not contain the answer.
+6. **Split when needed.** For very large collections, summarise each part first, then combine the summaries — or use retrieval to pull only the relevant sections.
+
+## An example prompt
+
+> The report is below between the <report> tags. Question: What reasons does it give for the drop in renewals? First list the relevant quotes, with section headings. Then summarise the reasons in three bullets, each tied to a quote. If the report does not say, answer "not stated".
+
+## Check the work
+
+- Spot-check quotes against the source — are they exact?
+- Compare the answer with the section headings; was anything important skipped?
+- For numbers, recompute from the source tables yourself.
+
+## Know the limits
+
+A longer context window lets you include more, but it does not make every detail equally easy to find. Focused input — only the relevant pages — usually beats dumping everything in.
+
+## Key takeaways
+
+- Place long material first, the question last, and label each document.
+- Ask for exact quotes first, then an answer based only on them.
+- Allow "not stated" so the model does not invent an answer.
+- Verify quotes and numbers, and prefer focused input over dumping everything.', 7, '[{"title":"Search YouTube: Claude long document analysis prompting tips quotes citations","url":"https://www.youtube.com/results?search_query=Claude%20long%20document%20analysis%20prompting%20tips%20quotes%20citations","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'working-with-claude' and s.order_index = 7),
+  'Why ask Claude to extract exact quotes before answering a question about a long report?', '["It anchors the answer to real text, making invented claims easier to spot","It removes the need to read the answer","Quotes speed up the reading","Quotes make the response longer"]'::jsonb, 0, 'Quotes tie each point to the source, so you can verify it and the model has less room to invent.', 1);
+
+insert into public.sessions (topic_id, title, content_markdown, order_index, youtube_urls)
+values ((select id from public.topics where slug = 'working-with-claude'), 'Claude as a data-analysis partner: a repeatable workflow', '## Make it a routine, not a one-off chat
+
+The best results come when you set Claude up once and reuse the setup. Using a **Project**, build a small kit:
+
+1. **Project instructions.** State your role, audience and rules: "You help a retail analytics team. Use plain English. Show assumptions. Never invent numbers; say when data is missing."
+2. **A data dictionary** (a markdown file). For each table: columns, types, meaning, known quirks ("status 7 means refunded", "dates are in UTC").
+3. **Metric definitions.** Write down exactly what "active customer", "churn" and "revenue" mean in your company.
+4. **Query and code examples.** A few vetted examples of how your team writes SQL or pandas, so new code follows house style.
+5. **An output template.** The sections you want in every analysis: question, method, result, caveats, next steps.
+
+## A repeatable loop
+
+1. **Frame** — paste the business question and any constraints.
+2. **Plan** — ask Claude to propose an approach and list the checks it will need.
+3. **Draft** — have it write the query or code against your data dictionary.
+4. **Run it yourself** and bring back the results or errors.
+5. **Interpret** — ask for the findings, plus the weakest assumption in them.
+6. **Verify** — reconcile totals and edge cases as you would for any analysis.
+7. **Package** — turn the verified result into your template.
+
+## Keep it safe
+
+- Share schemas and anonymised samples, not raw personal data.
+- Keep humans responsible for conclusions that drive decisions.
+- Update the data dictionary when a pitfall is discovered, so the lesson is not lost.
+
+## Key takeaways
+
+- Set up a Project with instructions, a data dictionary, metric definitions, examples and a template.
+- Follow a loop: frame, plan, draft, run, interpret, verify, package.
+- You run the code and check the numbers; Claude drafts and explains.
+- Capture lessons in the project files so every analysis starts smarter.', 8, '[{"title":"Search YouTube: using Claude projects for data analysis workflow data dictionary","url":"https://www.youtube.com/results?search_query=using%20Claude%20projects%20for%20data%20analysis%20workflow%20data%20dictionary","thumbnail":""}]'::jsonb)
+on conflict (topic_id, order_index) do update set title = excluded.title,
+  content_markdown = excluded.content_markdown, youtube_urls = excluded.youtube_urls;
+insert into public.inline_quizzes (session_id, question, options, correct_index, explanation, order_index)
+values ((select s.id from public.sessions s join public.topics t on t.id = s.topic_id where t.slug = 'working-with-claude' and s.order_index = 8),
+  'Why write metric definitions such as "active customer" into the project files?', '["So Claude uses your company''s exact meaning instead of guessing a different one","So the definitions can be changed in every chat","To make the files longer","Because Claude cannot read numbers"]'::jsonb, 0, 'Terms like "active" or "churn" vary between companies. Stating them removes a common source of silent error.', 1);
+
 insert into public.final_quizzes (topic_id, questions)
-values ((select id from public.topics where slug = 'working-with-claude'), '[{"question":"What is a Claude Project?","options":["A workspace with shared knowledge, instructions and chats","A kind of API key","A single message","A spreadsheet template"],"correct_index":0,"explanation":"A project bundles files, custom instructions and chats that share that context."},{"question":"Why are markdown files a good way to supply context?","options":["They bypass the context window","They are encrypted","They are clean, structured text that is easy for people and models to read","They are required by every AI service"],"correct_index":2,"explanation":"Markdown is simple structured text with no layout noise."},{"question":"Which habit makes context files work best?","options":["Include API keys for convenience","One purpose per file, concrete definitions, kept current","Never update them","Put every document you own into a single file"],"correct_index":1,"explanation":"Focused, current files give better answers and use less of the context window."},{"question":"You send Claude a photo of a table and ask for CSV. What is the right follow-up?","options":["Spot-check values and totals against the original","Delete the original","Assume images are never misread","Use it as-is"],"correct_index":0,"explanation":"Small numbers and text can be misread, so verify extracted data."},{"question":"What is a system prompt (or project instructions) for?","options":["Increasing the number of tokens you are billed","Replacing the model''s weights","Hiding your API key","Standing rules and context that apply to every message"],"correct_index":3,"explanation":"It sets the role, boundaries and format before the conversation begins."},{"question":"A web page the assistant is summarising contains hidden text telling it to reveal private notes. What is this attack called?","options":["Tokenisation","Prompt injection","Rate limiting","Few-shot prompting"],"correct_index":1,"explanation":"Attackers hide instructions in documents, pages or messages the model reads — that is prompt injection."},{"question":"Which setup best reduces the risk from prompt injection?","options":["Give the assistant every permission and never review its actions","Paste every document you find online","Limit permissions, treat content as data, and require approval for actions","Turn off all instructions"],"correct_index":2,"explanation":"Layered safeguards — least privilege, data-not-commands, and human approval — reduce the risk."},{"question":"What do connectors (often built on MCP) let Claude do?","options":["Change its own weights","Read from and act in other tools, with your permission","Guarantee perfect answers","Remove all rate limits"],"correct_index":1,"explanation":"Connectors link Claude to other apps and data sources under permissions you grant."},{"question":"Your Research Assistant is asked something outside its sources. Which response shows the guardrail works?","options":["\"Not in the sources — consider adding a note on that topic.\"","A random quote","A confident answer invented from nowhere","Silence"],"correct_index":0,"explanation":"Admitting a gap instead of guessing is exactly what the guardrail is meant to produce."},{"question":"Which combination best describes how to apply what you learned across this whole course?","options":["Avoid testing because AI is always right","Paste secrets for better results","Trust the first answer and share it widely","Write specific prompts, supply curated context, set guardrails, protect keys and data, and verify the output"],"correct_index":3,"explanation":"Good practice combines clear prompts, curated context, guardrails, secure handling and verification."}]'::jsonb)
+values ((select id from public.topics where slug = 'working-with-claude'), '[{"question":"What is a Claude Project?","options":["A workspace with shared knowledge, instructions and chats","A kind of API key","A single message","A spreadsheet template"],"correct_index":0,"explanation":"A project bundles files, custom instructions and chats that share that context."},{"question":"Why are markdown files a good way to supply context?","options":["They bypass the context window","They are encrypted","They are clean, structured text that is easy for people and models to read","They are required by every AI service"],"correct_index":2,"explanation":"Markdown is simple structured text with no layout noise."},{"question":"Which habit makes context files work best?","options":["Include API keys for convenience","One purpose per file, concrete definitions, kept current","Never update them","Put every document you own into a single file"],"correct_index":1,"explanation":"Focused, current files give better answers and use less of the context window."},{"question":"You send Claude a photo of a table and ask for CSV. What is the right follow-up?","options":["Spot-check values and totals against the original","Delete the original","Assume images are never misread","Use it as-is"],"correct_index":0,"explanation":"Small numbers and text can be misread, so verify extracted data."},{"question":"What is a system prompt (or project instructions) for?","options":["Increasing the number of tokens you are billed","Replacing the model''s weights","Hiding your API key","Standing rules and context that apply to every message"],"correct_index":3,"explanation":"It sets the role, boundaries and format before the conversation begins."},{"question":"A web page the assistant is summarising contains hidden text telling it to reveal private notes. What is this attack called?","options":["Tokenisation","Prompt injection","Rate limiting","Few-shot prompting"],"correct_index":1,"explanation":"Attackers hide instructions in documents, pages or messages the model reads — that is prompt injection."},{"question":"Which setup best reduces the risk from prompt injection?","options":["Give the assistant every permission and never review its actions","Paste every document you find online","Limit permissions, treat content as data, and require approval for actions","Turn off all instructions"],"correct_index":2,"explanation":"Layered safeguards — least privilege, data-not-commands, and human approval — reduce the risk."},{"question":"What do connectors (often built on MCP) let Claude do?","options":["Change its own weights","Read from and act in other tools, with your permission","Guarantee perfect answers","Remove all rate limits"],"correct_index":1,"explanation":"Connectors link Claude to other apps and data sources under permissions you grant."},{"question":"Your Research Assistant is asked something outside its sources. Which response shows the guardrail works?","options":["\"Not in the sources — consider adding a note on that topic.\"","A random quote","A confident answer invented from nowhere","Silence"],"correct_index":0,"explanation":"Admitting a gap instead of guessing is exactly what the guardrail is meant to produce."},{"question":"Which combination best describes how to apply what you learned across this whole course?","options":["Avoid testing because AI is always right","Paste secrets for better results","Trust the first answer and share it widely","Write specific prompts, supply curated context, set guardrails, protect keys and data, and verify the output"],"correct_index":3,"explanation":"Good practice combines clear prompts, curated context, guardrails, secure handling and verification."},{"question":"For a very long document, which prompt layout is recommended?","options":["Question first, then paste the document","No question, just the document","Split the question into every other paragraph","Document first, then the instructions and question at the end"],"correct_index":3,"explanation":"Placing the material first and the question last tends to work better for long inputs."},{"question":"In a repeatable analysis workflow with Claude, who should run the code and confirm the numbers?","options":["Nobody, because the code is always right","The model provider","You — Claude drafts and explains, and you run and verify the results","Claude alone, with no human check"],"correct_index":2,"explanation":"The analyst stays accountable: run the code, check totals and edge cases, and own the conclusions."}]'::jsonb)
 on conflict (topic_id) do update set questions = excluded.questions;
 
 -- ───────── Topic 7: AI for Data Analysis ─────────

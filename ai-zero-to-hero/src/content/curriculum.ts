@@ -8,19 +8,32 @@ import { topic7 } from './topics/07-ai-for-data-analysis';
 import { topic8 } from './topics/08-your-own-data-rag';
 import { topic9 } from './topics/09-agents-and-tool-use';
 import { topic10 } from './topics/10-evaluating-and-shipping-ai';
-import type { QuizItem, TopicContent } from './types';
+import { buildersAdvanced } from './advanced/builders';
+import { foundationsAdvanced } from './advanced/foundations';
+import type { QuizItem, TopicContent, TopicExtra } from './types';
 
-/** Order here = unlock order (order_index 1..n). Topics 1–6 are the foundations; 7–10 are the advanced track. */
-export const curriculum: TopicContent[] = [topic1, topic2, topic3, topic4, topic5, topic6, topic7, topic8, topic9, topic10];
+/** Extra advanced sessions and final-quiz questions, keyed by topic slug, appended to topics 1–6. */
+export const advancedExtras: Record<string, TopicExtra> = { ...foundationsAdvanced, ...buildersAdvanced };
 
-/** The required counts, per topic (topics 1–6 from the original spec, 7–10 for the advanced track). */
+const withExtras = (t: TopicContent): TopicContent => {
+  const x = advancedExtras[t.slug];
+  return x ? { ...t, sessions: [...t.sessions, ...x.sessions], finalQuiz: [...t.finalQuiz, ...x.finalQuiz] } : t;
+};
+
+/**
+ * Order here = unlock order (order_index 1..n). Topics 1–6 are the foundations, each ending with advanced
+ * sessions; 7–10 are the advanced track.
+ */
+export const curriculum: TopicContent[] = [topic1, topic2, topic3, topic4, topic5, topic6, topic7, topic8, topic9, topic10].map(withExtras);
+
+/** The required counts, per topic (topics 1–6 = the original spec plus two advanced sessions each; 7–10 = the advanced track). */
 export const EXPECTED = [
-  { sessions: 5, inline: 6, final: 8 },
-  { sessions: 5, inline: 6, final: 8 },
-  { sessions: 5, inline: 6, final: 8 },
-  { sessions: 5, inline: 7, final: 10 },
-  { sessions: 5, inline: 6, final: 8 },
-  { sessions: 6, inline: 8, final: 10 },
+  { sessions: 7, inline: 8, final: 10 },
+  { sessions: 7, inline: 8, final: 10 },
+  { sessions: 7, inline: 8, final: 10 },
+  { sessions: 7, inline: 9, final: 12 },
+  { sessions: 7, inline: 8, final: 10 },
+  { sessions: 8, inline: 10, final: 12 },
   { sessions: 5, inline: 6, final: 10 },
   { sessions: 5, inline: 7, final: 10 },
   { sessions: 5, inline: 7, final: 10 },

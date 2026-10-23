@@ -44,3 +44,9 @@ export const ytSearch = (query: string, title?: string): Video => ({
   url: `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`,
   thumbnail: '',
 });
+
+/** Extra material appended to an existing topic: more sessions at the end, more questions in its final quiz. */
+export type TopicExtra = {
+  sessions: SessionContent[];
+  finalQuiz: QuizItem[];
+};
