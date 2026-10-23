@@ -1,4 +1,5 @@
 'use client';
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { advanceAlong, buildGrid, findPath, isFree, nearestFree, nearestInLargestRegion, pickTarget, type Grid, type Vec } from '@/lib/roam';
 import { collectObstacles } from './obstacles';
@@ -8,6 +9,8 @@ const SPEED = 46; // px/s — a slow duck waddle
 const FIRST_WALK_MS = 1200; // after the page loads
 const REST_MS = [2500, 5000] as const; // how long it sits between walks
 const REFRESH_MS = 400; // how often it re-reads where the text is
+/** Pages where the duck stays away on phones: the lesson text fills the screen. */
+const NO_DUCK_ON_PHONE = /^\/(topics\/[^/]+\/\d+|preview\/session)\/?$/;
 
 /**
  * The page duck. It wanders around the page — but never across the text: it reads where the text,
@@ -23,6 +26,8 @@ export function RoamingDuck() {
   const [moving, setMoving] = useState(false);
   const [facing, setFacing] = useState<1 | -1>(1);
   const [small, setSmall] = useState(false);
+  const pathname = usePathname();
+  const suppressed = small && NO_DUCK_ON_PHONE.test(pathname);
 
   useEffect(() => {
     setSmall(window.innerWidth < 640);
@@ -30,7 +35,7 @@ export function RoamingDuck() {
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || suppressed) return;
     const root = rootRef.current;
     if (!root) return;
 
@@ -202,9 +207,9 @@ export function RoamingDuck() {
       window.removeEventListener('resize', onViewportChange);
       window.removeEventListener('scroll', onViewportChange, { capture: true });
     };
-  }, [mounted]);
+  }, [mounted, suppressed]);
 
-  if (!mounted) return null;
+  if (!mounted || suppressed) return null;
   return (
     <div
       ref={rootRef}
