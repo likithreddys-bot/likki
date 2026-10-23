@@ -31,11 +31,14 @@ export function LeaderboardTable({
   initialRows,
   initialMe,
   meId,
+  totalTopics,
   subscribe = true,
 }: {
   initialRows: LeaderboardRow[];
   initialMe: LeaderboardRow | null;
   meId: string;
+  /** How many topics exist, for the "3 / 10" column. */
+  totalTopics: number;
   /** Turn off the realtime subscription (used by the design preview, which has no database). */
   subscribe?: boolean;
 }) {
@@ -127,7 +130,7 @@ export function LeaderboardTable({
         <span className="font-display-bold text-xl tabular-nums" style={{ letterSpacing: 0 }}>
           {r.xp} XP
         </span>
-        <span className="hidden text-base font-medium sm:block">{r.topics_completed} / 6</span>
+        <span className="hidden text-base font-medium sm:block">{r.topics_completed} / {totalTopics}</span>
         <span className="hidden sm:block">
           <span className={cn('inline-block rounded-full border-2 border-ink px-3.5 py-1.5 text-[13px] font-bold', BADGE_TONE[r.badge] ?? 'bg-cream')}>{r.badge}</span>
         </span>

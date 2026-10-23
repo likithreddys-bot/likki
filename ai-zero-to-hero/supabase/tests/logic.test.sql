@@ -72,13 +72,13 @@ select test.assert((select name from public.users_profile where id = :'uid_b') =
 select test.assert((select xp = 0 and streak = 0 and rank = 'Beginner' from public.users_profile where id = :'uid_a'), 'defaults: 0 XP, 0 streak, Beginner');
 
 -- ───────────────────────── seed shape ─────────────────────────
-select test.assert((select count(*) from public.topics) = 6, '6 topics seeded');
-select test.assert((select count(*) from public.sessions) = 31, '31 sessions seeded');
-select test.assert((select count(*) from public.inline_quizzes) = 39, '39 inline quizzes seeded (6+6+6+7+6+8)');
-select test.assert((select count(*) from public.final_quizzes) = 6, '6 final quizzes seeded');
+select test.assert((select count(*) from public.topics) = 10, '10 topics seeded');
+select test.assert((select count(*) from public.sessions) = 51, '51 sessions seeded');
+select test.assert((select count(*) from public.inline_quizzes) = 66, '66 inline quizzes seeded (6+6+6+7+6+8+6+7+7+7)');
+select test.assert((select count(*) from public.final_quizzes) = 10, '10 final quizzes seeded');
 select test.assert((select string_agg(jsonb_array_length(questions)::text, ',' order by t.order_index)
-                      from public.final_quizzes f join public.topics t on t.id = f.topic_id) = '8,8,8,10,8,10',
-                   'final quiz sizes are 8,8,8,10,8,10');
+                      from public.final_quizzes f join public.topics t on t.id = f.topic_id) = '8,8,8,10,8,10,10,10,10,10',
+                   'final quiz sizes are 8,8,8,10,8,10,10,10,10,10');
 
 -- ───────────────────────── rank thresholds ─────────────────────────
 select test.assert(public.rank_for_xp(0)   = 'Beginner', 'rank 0 = Beginner');
@@ -93,10 +93,10 @@ select test.assert(public.rank_for_xp(500) = 'AI Pro',   'rank 500 = AI Pro');
 select set_config('test.uid', :'uid_a', false) \gset
 set role authenticated;
 
-select test.assert((select jsonb_array_length(public.get_dashboard())) = 6, 'dashboard lists all 6 topics');
+select test.assert((select jsonb_array_length(public.get_dashboard())) = 10, 'dashboard lists all 10 topics');
 select test.assert((select (public.get_dashboard() -> 0 ->> 'unlocked')::boolean), 'topic 1 is unlocked by default');
 select test.assert((select not bool_or((d ->> 'unlocked')::boolean) from jsonb_array_elements(public.get_dashboard()) d where (d ->> 'order_index')::int > 1),
-                   'topics 2-6 start locked');
+                   'topics 2-10 start locked');
 select test.assert((select count(distinct topic_id) from public.sessions) = 1, 'RLS: only topic 1 sessions are readable while others are locked');
 select test.assert((select count(*) from public.inline_quizzes) = 6, 'RLS: only topic 1 inline quizzes are readable');
 select test.expect_error($$ select count(*) from public.final_quizzes $$, 'permission denied');
@@ -205,7 +205,7 @@ select test.assert((select topics_completed from public.leaderboard where name =
 reset role;
 set role anon;
 select test.expect_error($$ select * from public.leaderboard $$, 'permission denied');
-select test.assert((select count(*) from public.topics) = 6, 'anonymous visitors can read topic titles');
+select test.assert((select count(*) from public.topics) = 10, 'anonymous visitors can read topic titles');
 select test.expect_error($$ select * from public.sessions $$, 'permission denied');
 reset role;
 
@@ -213,12 +213,12 @@ reset role;
 select test.assert(exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'users_profile'),
                    'users_profile is in the supabase_realtime publication');
 
--- ───────────────────────── unlock chain walks all 6 topics ─────────────────────────
+-- ───────────────────────── unlock chain walks all 10 topics ─────────────────────────
 update public.users_profile set xp = 0 where id = :'uid_b';
 select set_config('test.uid', :'uid_b', false) \gset
 set role authenticated;
 do $$
-declare slugs text[] := array['what-is-ai','how-ai-models-work','ai-tools-landscape','prompt-engineering','api-keys-and-integrations','working-with-claude'];
+declare slugs text[] := array['what-is-ai','how-ai-models-work','ai-tools-landscape','prompt-engineering','api-keys-and-integrations','working-with-claude','ai-for-data-analysis','your-own-data-rag','agents-and-tool-use','evaluating-and-shipping-ai'];
         s text; r jsonb;
 begin
   foreach s in array slugs loop
@@ -227,6 +227,6 @@ begin
     perform test.assert((r ->> 'passed')::boolean, 'Bob passes ' || s);
   end loop;
 end $$;
-select test.assert((select bool_and((d ->> 'unlocked')::boolean and (d ->> 'quiz_passed')::boolean) from jsonb_array_elements(public.get_dashboard()) d), 'all 6 topics unlocked and passed in sequence');
+select test.assert((select bool_and((d ->> 'unlocked')::boolean and (d ->> 'quiz_passed')::boolean) from jsonb_array_elements(public.get_dashboard()) d), 'all 10 topics unlocked and passed in sequence');
 reset role;
-select test.assert((select xp = 600 and rank = 'AI Pro' from public.users_profile where id = :'uid_b'), 'six passes = 600 XP = AI Pro');
+select test.assert((select xp = 1000 and rank = 'AI Pro' from public.users_profile where id = :'uid_b'), 'ten passes = 1000 XP = AI Pro');

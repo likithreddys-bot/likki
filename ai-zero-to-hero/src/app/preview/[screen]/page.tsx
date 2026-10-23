@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { curriculum } from '@/content/curriculum';
 import { DashboardView } from '@/components/dashboard/DashboardView';
 import { LeaderboardView } from '@/components/leaderboard/LeaderboardView';
 import { FinalQuiz } from '@/components/quiz/FinalQuiz';
@@ -41,7 +42,7 @@ export default function Preview({ params, searchParams }: { params: { screen: st
         </>
       );
     case 'leaderboard':
-      return <LeaderboardView profile={profile} rows={leaderboardRows} me={leaderboardMe} subscribe={false} />;
+      return <LeaderboardView profile={profile} rows={leaderboardRows} me={leaderboardMe} totalTopics={curriculum.length} subscribe={false} />;
     default:
       notFound();
   }

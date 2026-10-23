@@ -2,9 +2,9 @@
 
 A gamified, unlock-based learning platform that takes complete beginners (data analysts with zero AI knowledge) from "What is AI?" to building their own research assistant with Claude.
 
-- **6 topics · 31 sessions · 39 practice questions · 52 final-quiz questions**
+- **10 topics · 51 sessions · 66 practice questions · 92 final-quiz questions** — six foundation topics, then an advanced track for working analysts: AI for data analysis, your own data (RAG), agents and tool use, and evaluating and shipping AI.
 - Pass each topic's final quiz with **70%** to unlock the next one. Practice questions never block you.
-- Earn **+100 XP** per topic, keep a daily **streak**, climb ranks (**Beginner → Explorer → Builder → AI Pro**) and watch a live **leaderboard**.
+- Earn **+100 XP** per topic, keep a daily **streak**, climb ranks (**Beginner → Explorer → Builder → AI Pro**; thresholds are fixed at 100/300/500 XP, so AI Pro is reached after five topics) and watch a live **leaderboard**.
 - A little robot duck (Bolt) **walks the roadmap** — slowly, with a waddle — to the topic you're on, and sits down on it.
 
 **Stack:** Next.js 14 (App Router) · TypeScript · Tailwind CSS · shadcn/ui-style components · Supabase (auth, Postgres, realtime) · `next-mdx-remote` · `lucide-react`.
@@ -104,7 +104,7 @@ Tokens come from the Figma variable collection **Tokens** and are applied as CSS
 | `npm run dev` / `build` / `start` | Next.js |
 | `npm run typecheck` · `npm run lint` | TypeScript and ESLint |
 | `npm test` | Vitest: curriculum counts, rank rules, trail geometry, walker speed, helpers |
-| `npm run test:sql` | Runs the migration + seed + 77 assertions on a throw-away local Postgres (needs Postgres binaries; uses a stub of Supabase's `auth` schema) |
+| `npm run test:sql` | Runs the migration + seed + 81 assertions on a throw-away local Postgres (needs Postgres binaries; uses a stub of Supabase's `auth` schema) |
 | `npm run seed:generate` | Rebuilds `supabase/seed.sql` |
 | `node scripts/screenshots.mjs` | Screenshots the design preview screens (needs `npm run dev`) |
 | `node scripts/check-duck.mjs` | Samples the duck's position over time to prove it walks, slowly, and sits |

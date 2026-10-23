@@ -7,11 +7,13 @@ export function LeaderboardView({
   profile,
   rows,
   me,
+  totalTopics,
   subscribe = true,
 }: {
   profile: Profile;
   rows: LeaderboardRow[];
   me: LeaderboardRow | null;
+  totalTopics: number;
   subscribe?: boolean;
 }) {
   return (
@@ -27,7 +29,7 @@ export function LeaderboardView({
               <SittingSprite height={130} />
             </div>
           </div>
-          <LeaderboardTable initialRows={rows} initialMe={me} meId={profile.id} subscribe={subscribe} />
+          <LeaderboardTable initialRows={rows} initialMe={me} meId={profile.id} totalTopics={totalTopics} subscribe={subscribe} />
         </main>
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-28">
           <p className="hand absolute bottom-3 left-[30%] hidden -rotate-2 text-[26px] text-pink lg:block">catch up by passing quizzes — +100 XP each</p>

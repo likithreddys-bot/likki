@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { curriculum, EXPECTED, shuffledCurriculum, shuffleQuiz } from '../src/content/curriculum';
+import { curriculum, EXPECTED, shuffledCurriculum, shuffleQuiz, TOTALS } from '../src/content/curriculum';
 import type { QuizItem } from '../src/content/types';
 
 const allQuizzes = (topics = curriculum): QuizItem[] =>
   topics.flatMap((t) => [...t.sessions.flatMap((s) => s.quizzes), ...t.finalQuiz]);
 
 describe('curriculum matches the spec', () => {
-  it('has 6 topics in the specified order', () => {
+  it('has the topics in the specified order', () => {
     expect(curriculum.map((t) => t.title)).toEqual([
       'What is AI?',
       'How AI Models Work',
@@ -14,6 +14,10 @@ describe('curriculum matches the spec', () => {
       'Prompt Engineering',
       'API Keys & Integrations',
       'Working with Claude',
+      'AI for Data Analysis',
+      'Your Own Data with RAG',
+      'Agents and Tool Use',
+      'Evaluating and Shipping AI',
     ]);
   });
 
@@ -24,8 +28,14 @@ describe('curriculum matches the spec', () => {
     expect(t.finalQuiz).toHaveLength(e.final);
   });
 
-  it('has 31 sessions in total', () => {
-    expect(curriculum.reduce((c, t) => c + t.sessions.length, 0)).toBe(31);
+  it('has the expected totals', () => {
+    expect(curriculum).toHaveLength(TOTALS.topics);
+    expect(curriculum.reduce((c, t) => c + t.sessions.length, 0)).toBe(TOTALS.sessions);
+    expect(TOTALS.sessions).toBeGreaterThanOrEqual(31);
+  });
+
+  it('topic slugs are unique', () => {
+    expect(new Set(curriculum.map((t) => t.slug)).size).toBe(curriculum.length);
   });
 
   it('every quiz is well-formed', () => {
@@ -83,7 +93,7 @@ describe('option shuffling', () => {
     const counts = [0, 0, 0, 0];
     for (const q of allQuizzes(shuffledCurriculum())) counts[q.correct]++;
     const total = counts.reduce((a, b) => a + b, 0);
-    expect(total).toBe(39 + 52);
+    expect(total).toBe(TOTALS.inline + TOTALS.final);
     for (const c of counts) expect(c / total).toBeGreaterThan(0.12);
   });
 });

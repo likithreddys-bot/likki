@@ -106,20 +106,38 @@ export function distanceBetween(trail: Trail, a: number, b: number): number {
   return total;
 }
 
-/** The desktop dashboard layout (1344 × 1200), matching the Figma "Trail map" frame. */
-export const DASHBOARD_NODES: TrailNode[] = [
-  { x: 200, y: 150, stop: true },
-  { x: 672, y: 230, stop: true },
-  { x: 1144, y: 150, stop: true },
-  { x: 1318, y: 395 }, // bend on the right edge, not a stop
-  { x: 1144, y: 640, stop: true },
-  { x: 672, y: 720, stop: true },
-  { x: 200, y: 640, stop: true },
-];
+/**
+ * A snaking trail: stops fill rows left→right, then right→left, with an unnumbered bend node at the
+ * edge where it turns. Works for any number of stops.
+ */
+function serpentine(
+  n: number,
+  o: { cols: number; x0: number; dx: number; y0: number; dy: number; wave: (col: number) => number; leftEdge: number; rightEdge: number },
+): TrailNode[] {
+  const nodes: TrailNode[] = [];
+  for (let i = 0; i < n; i++) {
+    const row = Math.floor(i / o.cols);
+    const pos = i % o.cols;
+    const col = row % 2 === 0 ? pos : o.cols - 1 - pos;
+    nodes.push({ x: o.x0 + col * o.dx, y: o.y0 + row * o.dy + o.wave(col), stop: true });
+    if (pos === o.cols - 1 && i < n - 1) nodes.push({ x: row % 2 === 0 ? o.rightEdge : o.leftEdge, y: o.y0 + row * o.dy + o.dy / 2 });
+  }
+  return nodes;
+}
 
-/** The landing-page teaser: six stops on a gentle wave (1280 × 260), matching the Figma "Trail map". */
-export const TEASER_NODES: TrailNode[] = [0, 1, 2, 3, 4, 5].map((i) => ({
-  x: 100 + i * 216,
-  y: i % 2 ? 120 : 190,
-  stop: true,
-}));
+const rowsFor = (n: number, cols: number) => Math.max(1, Math.ceil(n / cols));
+
+/** The desktop dashboard layout: 1344 wide, three stops per row. For six stops this is the Figma "Trail map" (1344 × 1200). */
+export const dashboardNodes = (n: number): TrailNode[] =>
+  serpentine(n, { cols: 3, x0: 200, dx: 472, y0: 150, dy: 490, wave: (c) => (c === 1 ? 80 : 0), leftEdge: 26, rightEdge: 1318 });
+export const dashboardHeight = (n: number) => 150 + (rowsFor(n, 3) - 1) * 490 + 560;
+export const DASHBOARD_NODES: TrailNode[] = dashboardNodes(6);
+
+/** The landing-page teaser (1280 wide): one gentle wave for up to six stops, otherwise two rows. */
+const teaserCols = (n: number) => (n <= 6 ? Math.max(n, 1) : Math.ceil(n / 2));
+export const teaserNodes = (n: number): TrailNode[] => {
+  const cols = teaserCols(n);
+  return serpentine(n, { cols, x0: 100, dx: cols > 1 ? 1080 / (cols - 1) : 0, y0: 190, dy: 300, wave: (c) => (c % 2 ? -70 : 0), leftEdge: 30, rightEdge: 1250 });
+};
+export const teaserHeight = (n: number) => 310 + (rowsFor(n, teaserCols(n)) - 1) * 300;
+export const TEASER_NODES: TrailNode[] = teaserNodes(6);

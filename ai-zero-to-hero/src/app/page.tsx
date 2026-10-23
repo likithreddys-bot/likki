@@ -4,6 +4,7 @@ import { Logo, LogoMark } from '@/components/Logo';
 import { buttonVariants } from '@/components/ui/button';
 import { SittingSprite } from '@/components/duck/sprites';
 import { TrailTeaser } from '@/components/landing/TrailTeaser';
+import { curriculum, TOTALS } from '@/content/curriculum';
 import { cn } from '@/lib/utils';
 
 const FEATURES = [
@@ -11,7 +12,7 @@ const FEATURES = [
     icon: Layers,
     tone: 'bg-pink',
     title: 'Structured Path',
-    text: 'Six topics in a fixed order — from “what is AI?” to building your own research assistant. You always know what’s next.',
+    text: `${TOTALS.topics} topics in a fixed order — from “what is AI?” through prompting and APIs to agents, your own data and shipping AI safely. You always know what’s next.`,
   },
   {
     icon: ClipboardCheck,
@@ -72,7 +73,7 @@ export default function LandingPage() {
               See the trail
             </a>
           </div>
-          <p className="text-[15px] font-medium text-soft">6 topics · 31 short sessions · 91 quiz questions</p>
+          <p className="text-[15px] font-medium text-soft">{TOTALS.topics} topics · {TOTALS.sessions} short sessions · {TOTALS.questions} quiz questions</p>
         </div>
 
         <div className="relative mx-auto h-[500px] w-full max-w-[560px] overflow-hidden rounded-3xl border-[3px] border-ink bg-pink-soft shadow-hard-xl sm:h-[580px]">
@@ -95,9 +96,9 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-[1280px] flex-col items-center gap-7">
           <div className="flex flex-col items-center gap-2.5 text-center">
             <p className="hand text-[28px] text-pink">the whole journey, at a glance</p>
-            <h2 className="font-display-black max-w-[900px] text-[38px] leading-[1.1] sm:text-5xl">Six stops from curious to confident</h2>
+            <h2 className="font-display-black max-w-[900px] text-[38px] leading-[1.1] sm:text-5xl">{TOTALS.topics} stops from curious to confident</h2>
           </div>
-          <TrailTeaser />
+          <TrailTeaser names={curriculum.map((t) => t.title)} />
         </div>
       </section>
 
@@ -124,7 +125,7 @@ export default function LandingPage() {
       <section className="mx-auto flex max-w-[1440px] flex-col items-center gap-11 px-5 pb-28 pt-[72px] sm:px-20 sm:pb-[190px]">
         <div className="flex flex-col items-center gap-2.5 text-center">
           <p className="hand text-[28px] text-pink">how it works</p>
-          <h2 className="font-display-black max-w-[900px] text-[38px] leading-[1.1] sm:text-5xl">Three steps. Repeat six times.</h2>
+          <h2 className="font-display-black max-w-[900px] text-[38px] leading-[1.1] sm:text-5xl">Three steps. Repeat for every topic.</h2>
         </div>
         <ol className="grid w-full gap-7 md:grid-cols-3">
           {STEPS.map(({ icon: Icon, title, text }, i) => (

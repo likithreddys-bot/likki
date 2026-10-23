@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { buildTrail, DASHBOARD_NODES, type TrailNode } from '@/lib/trail';
+import { buildTrail, dashboardHeight, dashboardNodes, type TrailNode } from '@/lib/trail';
 import type { TopicView } from '@/lib/rank';
 import { TrailDuck } from '@/components/duck/TrailDuck';
 import { StopNode } from './StopNode';
@@ -8,7 +8,6 @@ import { TopicStopCard } from './TopicStopCard';
 import { useDuckJourney } from './useDuckJourney';
 
 const STAGE_W = 1344;
-const STAGE_H = 1200;
 
 function useIsDesktop(): boolean | null {
   const [v, setV] = useState<boolean | null>(null);
@@ -48,7 +47,8 @@ function DesktopTrail({ views, currentIndex, userKey }: { views: TopicView[]; cu
     return () => ro.disconnect();
   }, []);
 
-  const trail = useMemo(() => buildTrail(DASHBOARD_NODES), []);
+  const STAGE_H = dashboardHeight(views.length);
+  const trail = useMemo(() => buildTrail(dashboardNodes(views.length)), [views.length]);
   const duck = useDuckJourney(trail, currentIndex, userKey);
   const atCurrent = !duck.moving;
 
@@ -121,7 +121,7 @@ function DesktopTrail({ views, currentIndex, userKey }: { views: TopicView[]; cu
         <TrailDuck elRef={duck.elRef} moving={duck.moving} facing={duck.facing} ready={duck.ready} walkHeight={120} sitHeight={160} sitLift={40} />
 
         {/* The little robot that strolls along every page's bottom edge is rendered once, in the root layout. */}
-        <div className="absolute left-0 w-full" style={{ top: 1092 }} aria-hidden>
+        <div className="absolute left-0 w-full" style={{ top: STAGE_H - 108 }} aria-hidden>
           <svg width={STAGE_W} height={80} className="absolute left-0 top-0">
             <path d="M0 50 C 200 10, 400 70, 640 40 S 1000 10, 1344 45" fill="none" stroke="rgb(var(--ink))" strokeWidth={3} strokeLinecap="round" strokeDasharray="1 12" />
           </svg>

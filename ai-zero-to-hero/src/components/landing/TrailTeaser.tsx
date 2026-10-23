@@ -1,20 +1,19 @@
 'use client';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { buildTrail, TEASER_NODES } from '@/lib/trail';
+import { buildTrail, teaserHeight, teaserNodes } from '@/lib/trail';
 import { TrailDuck } from '@/components/duck/TrailDuck';
 import { useTrailWalker } from '@/components/duck/useTrailWalker';
 import { cn } from '@/lib/utils';
 
 const W = 1280;
-const H = 260;
-const NAMES = ['What is AI?', 'How models work', 'AI tools', 'Prompting', 'API keys', 'Working with Claude'];
-const TONES = ['bg-pink', 'bg-orange', 'bg-yellow', 'bg-pink', 'bg-orange', 'bg-yellow'];
+const TONES = ['bg-pink', 'bg-orange', 'bg-yellow'];
 
 /** The landing-page trail: the duck waddles from stop to stop, sits for a bit, then carries on — forwards and back. */
-export function TrailTeaser() {
+export function TrailTeaser({ names }: { names: string[] }) {
+  const H = teaserHeight(names.length);
   const outer = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
-  const trail = useMemo(() => buildTrail(TEASER_NODES), []);
+  const trail = useMemo(() => buildTrail(teaserNodes(names.length)), [names.length]);
   const dirRef = useRef<1 | -1>(1);
   const timer = useRef<ReturnType<typeof setTimeout>>();
   const walkRef = useRef<(i: number) => void>(() => {});
@@ -62,13 +61,13 @@ export function TrailTeaser() {
             {trail.stops.map((s, i) => (
               <li key={i} className="contents">
                 <span
-                  className={cn('absolute flex size-[68px] items-center justify-center rounded-full border-[3px] border-ink shadow-hard font-display-black text-[28px]', TONES[i])}
+                  className={cn('absolute flex size-[68px] items-center justify-center rounded-full border-[3px] border-ink shadow-hard font-display-black text-[28px]', TONES[i % TONES.length])}
                   style={{ left: s.x - 34, top: s.y - 34 }}
                 >
                   {i + 1}
                 </span>
                 <span className="absolute w-40 text-center text-[15px] font-semibold" style={{ left: s.x - 80, top: s.y + 44 }}>
-                  {NAMES[i]}
+                  {names[i]}
                 </span>
               </li>
             ))}
