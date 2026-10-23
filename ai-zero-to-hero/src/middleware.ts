@@ -41,6 +41,10 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
+/**
+ * Only the pages that depend on who is signed in run this (it costs a round trip to Supabase).
+ * The landing page, setup page, 404 and static files are served as-is, so they stay fast.
+ */
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|robot/|covers/|logo.svg|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  matcher: ['/login', '/dashboard/:path*', '/topics/:path*', '/leaderboard/:path*'],
 };

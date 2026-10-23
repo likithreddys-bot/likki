@@ -59,6 +59,8 @@ If the two values are missing, the app shows a friendly setup page instead of cr
 3. **Site configuration → Environment variables:** add `NEXT_PUBLIC_SUPABASE_URL` (just `https://<ref>.supabase.co`) and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. These are read at **build** time, so trigger a new deploy after changing them.
 4. After the first deploy, copy the site URL and in Supabase go to **Authentication → URL Configuration**: set **Site URL** to it and add `https://<your-site>/auth/callback` to **Redirect URLs** (keep the `http://localhost:3000/...` entries for local work).
 5. Sign up on the live site, finish a session and check the leaderboard.
+6. **Speed:** every signed-in page makes several calls to Supabase, so the server's location matters. In Netlify set **Functions region** (Site configuration → Functions) to the region closest to your Supabase project (Project Settings → General → Region), ideally also close to your users. Measured on the first deploy: functions in `us-east-2` with most visitors in India gave 2–4 s server time on pages that call the dashboard function, while the database queries themselves take only a few milliseconds.
+
 
 ## How the rules are enforced
 
