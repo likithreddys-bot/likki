@@ -100,7 +100,7 @@ for (const [vpName, viewport] of VIEWPORTS) {
     page.on('pageerror', (e) => errs.push(e.message));
     await page.goto(BASE + path, { waitUntil: 'networkidle' });
     await page.waitForTimeout(1600); // first walk starts ~1.2s after load
-    if (viewport.width < 640 && (name === 'topic session' || name === 'final quiz' || name === 'leaderboard')) {
+    if (viewport.width < 640 && (name === 'topic session' || name === 'final quiz' || name === 'leaderboard' || name === 'dashboard')) {
       // lessons and quizzes fill a phone screen: the duck is deliberately not shown there
       const none = (await read(page)).count === 0;
       if (!none) failures++;
