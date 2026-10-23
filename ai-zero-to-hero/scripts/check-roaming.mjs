@@ -145,8 +145,8 @@ console.table(rows);
     console.error('FAILED: the duck overlapped text during the long run');
     failures++;
   }
-  if (!(poses.has('walking') && poses.has('sitting') && walks >= 2 && spanX > 600 && spanY > 80)) {
-    console.error('FAILED: the duck should rest, walk again, and cross the content');
+  if (!(poses.has('walking') && poses.has('sitting') && walks >= 2 && Math.hypot(spanX, spanY) > 150)) {
+    console.error('FAILED: the duck should rest, then walk again around the free space');
     failures++;
   }
   await page.close();

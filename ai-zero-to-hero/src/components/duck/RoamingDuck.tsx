@@ -35,7 +35,7 @@ export function RoamingDuck() {
     if (!root) return;
 
     const isSmall = window.innerWidth < 640;
-    const fp = isSmall ? { halfW: 28, h: 76 } : { halfW: 34, h: 100 };
+    const fp = isSmall ? { halfW: 34, h: 104 } : { halfW: 46, h: 140 };
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let grid: Grid = buildGrid(window.innerWidth, window.innerHeight, [], fp);
@@ -216,9 +216,9 @@ export function RoamingDuck() {
     >
       <div style={{ transform: 'translate(-50%, -100%)' }}>
         {moving ? (
-          <WalkingSprite height={small ? 64 : 84} flip={facing < 0} />
+          <WalkingSprite height={small ? 90 : 118} flip={facing < 0} />
         ) : (
-          <SittingSprite height={small ? 72 : 96} flip={facing < 0} />
+          <SittingSprite height={small ? 100 : 134} flip={facing < 0} />
         )}
       </div>
     </div>
