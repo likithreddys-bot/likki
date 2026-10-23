@@ -7,6 +7,10 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # These two values are public by design (Next.js inlines NEXT_PUBLIC_* into the site, and the anon key is the
+  # browser-safe key). Netlify's secrets scan would otherwise fail the build when it finds them in the output.
+  # Never add a service_role key or any other real secret here.
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY"
 
 # Run Netlify's Next.js runtime explicitly: it turns the server-rendered pages and middleware into Netlify functions.
 # Without it the site is published as plain static files and every page shows Netlify's "Page not found".
