@@ -1,0 +1,8 @@
+# Netlify settings for AI Zero to Hero.
+# In Netlify set "Base directory" to ai-zero-to-hero (this repo also contains an unrelated static site at its root).
+# Netlify detects Next.js and installs its Next.js runtime automatically; no publish directory is needed.
+[build]
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
