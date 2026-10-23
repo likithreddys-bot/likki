@@ -55,7 +55,7 @@ If the two values are missing, the app shows a friendly setup page instead of cr
 ## Deploy to Netlify
 
 1. Push the repo to GitHub and in Netlify choose **Add new site → Import an existing project → GitHub**, then pick the repo and the branch to deploy.
-2. **Base directory:** `ai-zero-to-hero` (the repo root also holds an unrelated static site). The build command (`npm run build`) and Node version come from `ai-zero-to-hero/netlify.toml`; leave the publish directory empty — Netlify's Next.js support handles it.
+2. **Base directory:** `ai-zero-to-hero` (the repo root also holds an unrelated static site). The build command, publish directory (`.next`), Node version and the Next.js runtime plugin come from `ai-zero-to-hero/netlify.toml` and override the UI. A healthy deploy lists server functions in its summary; if it shows only static files, every page will 404.
 3. **Site configuration → Environment variables:** add `NEXT_PUBLIC_SUPABASE_URL` (just `https://<ref>.supabase.co`) and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. These are read at **build** time, so trigger a new deploy after changing them.
 4. After the first deploy, copy the site URL and in Supabase go to **Authentication → URL Configuration**: set **Site URL** to it and add `https://<your-site>/auth/callback` to **Redirect URLs** (keep the `http://localhost:3000/...` entries for local work).
 5. Sign up on the live site, finish a session and check the leaderboard.
