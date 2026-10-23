@@ -9,8 +9,8 @@ const SPEED = 46; // px/s — a slow duck waddle
 const FIRST_WALK_MS = 1200; // after the page loads
 const REST_MS = [2500, 5000] as const; // how long it sits between walks
 const REFRESH_MS = 400; // how often it re-reads where the text is
-/** Pages where the duck stays away on phones: the lesson text fills the screen. */
-const NO_DUCK_ON_PHONE = /^\/(topics\/[^/]+\/\d+|preview\/session)\/?$/;
+/** Pages where the duck stays away on phones: lesson and final-quiz text fills the screen. */
+const NO_DUCK_ON_PHONE = /^\/(topics\/[^/]+\/(\d+|quiz)|preview\/(session|quiz))\/?$/;
 
 /**
  * The page duck. It wanders around the page — but never across the text: it reads where the text,
