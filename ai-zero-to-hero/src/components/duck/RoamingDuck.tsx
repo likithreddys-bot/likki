@@ -9,15 +9,15 @@ const SPEED = 46; // px/s — a slow duck waddle
 const FIRST_WALK_MS = 1200; // after the page loads
 const REST_MS = [2500, 5000] as const; // how long it sits between walks
 const REFRESH_MS = 400; // how often it re-reads where the text is
-/** Pages where the duck stays away on phones: lesson, final-quiz, leaderboard and dashboard text fills the screen. */
+/** Pages where the duck stays away on phones (on desktop it is never hidden): lesson, final-quiz, leaderboard and dashboard text fills the screen. */
 const NO_DUCK_ON_PHONE = /^\/(topics\/[^/]+\/(\d+|quiz)|leaderboard|dashboard|preview\/(session|quiz|leaderboard|dashboard))\/?$/;
 
 /**
  * The page duck. It wanders around the page — but never across the text: it reads where the text,
  * buttons and inputs currently are, plans its route through the free space around them, waddles there
  * (turning to face where it is going), sits for a few seconds, then heads somewhere else. If text scrolls
- * under it, it steps out of the way; if the page leaves it no clear route anywhere, it quietly disappears until
- * some room appears. It floats above the page, never blocks clicks, and under prefers-reduced-motion it just sits
+ * under it, it steps out of the way; if a phone page leaves it no clear route anywhere, it quietly disappears until
+ * some room appears (on desktop it never disappears). It floats above the page, never blocks clicks, and under prefers-reduced-motion it just sits
  * still in a free corner.
  */
 export function RoamingDuck() {
@@ -115,14 +115,18 @@ export function RoamingDuck() {
 
     /** Nowhere free on screen right now: vanish, and look again shortly. */
     const hideAndRetry = () => {
-      boxed = true;
       stopWalking();
-      show(false);
+      if (isSmall) {
+        // phones: no room means no duck
+        boxed = true;
+        show(false);
+      } // desktop: it never disappears, it just waits where it is and looks again
       scheduleRest(1500);
     };
 
     const placeHome = () => {
-      const home = nearestInLargestRegion(grid, { x: window.innerWidth - 60, y: window.innerHeight - 10 });
+      const corner = { x: window.innerWidth - 60, y: window.innerHeight - 10 };
+      const home = nearestInLargestRegion(grid, corner) ?? (isSmall ? null : corner);
       if (!home) return hideAndRetry();
       pos = home;
       place();
@@ -165,7 +169,7 @@ export function RoamingDuck() {
             pos = free;
             place();
             show(true);
-          } else show(false);
+          } else if (isSmall) show(false);
           return;
         }
         return evict();
